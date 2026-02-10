@@ -1,0 +1,824 @@
+1.-----------------
+import 'package:flutter/material.dart';
+
+void main() {
+  runApp(const MyApp());
+}
+
+class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return const MaterialApp(
+      debugShowCheckedModeBanner: false,
+      home: HelloScreen(),
+    );
+  }
+}
+
+class HelloScreen extends StatelessWidget {
+  const HelloScreen({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: Center(
+        child: Text(
+          "Hello Flutter",
+          style: TextStyle(
+            fontSize: 28,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+2------------
+
+import 'package:flutter/material.dart';
+
+void main() {
+  runApp(const MyApp());
+}
+
+class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return const MaterialApp(
+      debugShowCheckedModeBanner: false,
+      home: LoginPage(),
+    );
+  }
+}
+
+class LoginPage extends StatefulWidget {
+  const LoginPage({super.key});
+
+  @override
+  State<LoginPage> createState() => _LoginPageState();
+}
+
+class _LoginPageState extends State<LoginPage> {
+
+  final _formKey = GlobalKey<FormState>();
+  final usernameController = TextEditingController();
+  final passwordController = TextEditingController();
+
+  String message = "";
+
+  void validateLogin() {
+    if (_formKey.currentState!.validate()) {
+
+      String user = usernameController.text;
+      String pass = passwordController.text;
+
+      // Simple validation rule
+      if (user == "admin" && pass == "1234") {
+        setState(() {
+          message = "Login Successful ✅";
+        });
+      } else {
+        setState(() {
+          message = "Invalid Username or Password ❌";
+        });
+      }
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: const Text("Login App")),
+      body: Padding(
+        padding: const EdgeInsets.all(20),
+        child: Form(
+          key: _formKey,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+
+              TextFormField(
+                controller: usernameController,
+                decoration: const InputDecoration(
+                  labelText: "Username",
+                  border: OutlineInputBorder(),
+                ),
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return "Enter username";
+                  }
+                  return null;
+                },
+              ),
+
+              const SizedBox(height: 15),
+
+              TextFormField(
+                controller: passwordController,
+                obscureText: true,
+                decoration: const InputDecoration(
+                  labelText: "Password",
+                  border: OutlineInputBorder(),
+                ),
+                validator: (value) {
+                  if (value == null || value.length < 4) {
+                    return "Password must be at least 4 characters";
+                  }
+                  return null;
+                },
+              ),
+
+              const SizedBox(height: 20),
+
+              ElevatedButton(
+                onPressed: validateLogin,
+                child: const Text("Login"),
+              ),
+
+              const SizedBox(height: 20),
+
+              Text(
+                message,
+                style: const TextStyle(fontSize: 18),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+3.----------
+import 'package:flutter/material.dart';
+
+void main() {
+  runApp(const MyApp());
+}
+
+class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return const MaterialApp(
+      debugShowCheckedModeBanner: false,
+      home: LoginPage(),
+    );
+  }
+}
+
+
+// ================= LOGIN PAGE =================
+
+class LoginPage extends StatefulWidget {
+  const LoginPage({super.key});
+
+  @override
+  State<LoginPage> createState() => _LoginPageState();
+}
+
+class _LoginPageState extends State<LoginPage> {
+
+  final _formKey = GlobalKey<FormState>();
+  final userController = TextEditingController();
+  final passController = TextEditingController();
+
+  void authenticate() {
+
+    if (_formKey.currentState!.validate()) {
+
+      String user = userController.text;
+      String pass = passController.text;
+
+      if (user == "admin" && pass == "1234") {
+
+        // Toast message
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text("Login Successful"))
+        );
+
+        // Redirect to welcome page
+        Future.delayed(const Duration(seconds: 1), () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => WelcomePage(username: user),
+            ),
+          );
+        });
+
+      } else {
+
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text("Invalid Credentials"))
+        );
+      }
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: const Text("Authentication App")),
+      body: Padding(
+        padding: const EdgeInsets.all(20),
+        child: Form(
+          key: _formKey,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+
+              TextFormField(
+                controller: userController,
+                decoration: const InputDecoration(
+                  labelText: "Username",
+                  border: OutlineInputBorder(),
+                ),
+                validator: (value) =>
+                    value!.isEmpty ? "Enter username" : null,
+              ),
+
+              const SizedBox(height: 15),
+
+              TextFormField(
+                controller: passController,
+                obscureText: true,
+                decoration: const InputDecoration(
+                  labelText: "Password",
+                  border: OutlineInputBorder(),
+                ),
+                validator: (value) =>
+                    value!.length < 4
+                        ? "Password must be 4+ characters"
+                        : null,
+              ),
+
+              const SizedBox(height: 20),
+
+              ElevatedButton(
+                onPressed: authenticate,
+                child: const Text("Login"),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+
+// ================= WELCOME PAGE =================
+
+class WelcomePage extends StatelessWidget {
+
+  final String username;
+
+  const WelcomePage({super.key, required this.username});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: const Text("Welcome")),
+      body: Center(
+        child: Text(
+          "Welcome, $username 🎉",
+          style: const TextStyle(
+            fontSize: 26,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+4.------------------
+
+import 'package:flutter/material.dart';
+
+void main() {
+  runApp(const MyApp());
+}
+
+class MyApp extends StatefulWidget {
+  const MyApp({super.key});
+
+  @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+
+  Color seedColor = Colors.blue;
+
+  void changeTheme(Color color) {
+    setState(() {
+      seedColor = color;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      theme: ThemeData(
+        colorScheme: ColorScheme.fromSeed(seedColor: seedColor),
+        useMaterial3: true,
+      ),
+      home: HomePage(onThemeChange: changeTheme),
+    );
+  }
+}
+
+
+// ================= HOME PAGE =================
+
+class HomePage extends StatelessWidget {
+
+  final Function(Color) onThemeChange;
+
+  const HomePage({super.key, required this.onThemeChange});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text("Theme Menu App"),
+        actions: [
+
+          PopupMenuButton<String>(
+            onSelected: (value) {
+              if (value == "Red") {
+                onThemeChange(Colors.red);
+              } else if (value == "Green") {
+                onThemeChange(Colors.green);
+              } else if (value == "Purple") {
+                onThemeChange(Colors.purple);
+              } else if (value == "Orange") {
+                onThemeChange(Colors.orange);
+              }
+            },
+            itemBuilder: (context) => const [
+              PopupMenuItem(value: "Red", child: Text("Red Theme")),
+              PopupMenuItem(value: "Green", child: Text("Green Theme")),
+              PopupMenuItem(value: "Purple", child: Text("Purple Theme")),
+              PopupMenuItem(value: "Orange", child: Text("Orange Theme")),
+            ],
+          )
+
+        ],
+      ),
+
+      body: const Center(
+        child: Text(
+          "Select a theme color from the AppBar menu",
+          style: TextStyle(fontSize: 18),
+        ),
+      ),
+    );
+  }
+}
+
+5.-----------------
+import 'dart:async';
+import 'package:flutter/material.dart';
+
+void main() {
+  runApp(const MyApp());
+}
+
+class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return const MaterialApp(
+      debugShowCheckedModeBanner: false,
+      home: TimerCounterPage(),
+    );
+  }
+}
+
+class TimerCounterPage extends StatefulWidget {
+  const TimerCounterPage({super.key});
+
+  @override
+  State<TimerCounterPage> createState() => _TimerCounterPageState();
+}
+
+class _TimerCounterPageState extends State<TimerCounterPage> {
+
+  int counter = 0;
+  Timer? timer;
+
+  void startTimer() {
+    timer?.cancel(); // prevent multiple timers
+    timer = Timer.periodic(const Duration(seconds: 2), (t) {
+      setState(() {
+        counter++;
+      });
+    });
+  }
+
+  void stopTimer() {
+    timer?.cancel();
+  }
+
+  @override
+  void dispose() {
+    timer?.cancel(); // clean up
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: const Text("Timer Counter App")),
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+
+            Text(
+              "Counter: $counter",
+              style: const TextStyle(
+                fontSize: 32,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+
+            const SizedBox(height: 20),
+
+            ElevatedButton(
+              onPressed: startTimer,
+              child: const Text("Start"),
+            ),
+
+            const SizedBox(height: 10),
+
+            ElevatedButton(
+              onPressed: stopTimer,
+              child: const Text("Stop"),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+6.-----------
+import 'dart:async';
+import 'package:flutter/material.dart';
+
+void main() {
+  runApp(const MyApp());
+}
+
+class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return const MaterialApp(
+      debugShowCheckedModeBanner: false,
+      home: ProgressPage(),
+    );
+  }
+}
+
+class ProgressPage extends StatelessWidget {
+  const ProgressPage({super.key});
+
+  // Stream generating progress values
+  Stream<double> progressStream() async* {
+    for (int i = 0; i <= 100; i += 5) {
+      await Future.delayed(const Duration(milliseconds: 200));
+      yield i / 100;   // convert to 0.0 → 1.0
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: const Text("Progress App")),
+      body: Center(
+        child: StreamBuilder<double>(
+          stream: progressStream(),
+          builder: (context, snapshot) {
+
+            double progress = snapshot.data ?? 0;
+
+            if (progress >= 1.0) {
+              return const Text(
+                "Completed ✅",
+                style: TextStyle(
+                  fontSize: 26,
+                  fontWeight: FontWeight.bold,
+                ),
+              );
+            }
+
+            return Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+
+                LinearProgressIndicator(value: progress),
+
+                const SizedBox(height: 20),
+
+                Text(
+                  "${(progress * 100).toInt()}%",
+                  style: const TextStyle(fontSize: 20),
+                ),
+              ],
+            );
+          },
+        ),
+      ),
+    );
+  }
+}
+
+7.------------------
+import 'dart:async';
+import 'dart:isolate';
+import 'package:flutter/material.dart';
+
+void main() {
+  runApp(const MyApp());
+}
+
+class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return const MaterialApp(
+      debugShowCheckedModeBanner: false,
+      home: NotificationPage(),
+    );
+  }
+}
+
+class NotificationPage extends StatefulWidget {
+  const NotificationPage({super.key});
+
+  @override
+  State<NotificationPage> createState() => _NotificationPageState();
+}
+
+class _NotificationPageState extends State<NotificationPage> {
+
+  Isolate? isolate;
+  String notificationText = "Service stopped";
+
+  void startService() async {
+    ReceivePort port = ReceivePort();
+
+    port.listen((msg) {
+      setState(() {
+        notificationText = msg;
+      });
+
+      // Show toast-like message
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(msg)),
+      );
+    });
+
+    isolate = await Isolate.spawn(backgroundTask, port.sendPort);
+  }
+
+  void stopService() {
+    isolate?.kill(priority: Isolate.immediate);
+    setState(() {
+      notificationText = "Service stopped";
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: const Text("Isolate Notification (Web)")),
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+
+            Text(
+              notificationText,
+              style: const TextStyle(fontSize: 22),
+            ),
+
+            const SizedBox(height: 20),
+
+            ElevatedButton(
+              onPressed: startService,
+              child: const Text("Start Service"),
+            ),
+
+            const SizedBox(height: 10),
+
+            ElevatedButton(
+              onPressed: stopService,
+              child: const Text("Stop Service"),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+
+// ================= ISOLATE WORK =================
+
+void backgroundTask(SendPort sendPort) {
+
+  Timer.periodic(const Duration(seconds: 3), (timer) {
+    sendPort.send("Notification at ${DateTime.now().toLocal()}");
+  });
+
+}
+
+8.--------------------
+import 'dart:isolate';
+import 'package:flutter/material.dart';
+
+void main() {
+  runApp(const MyApp());
+}
+
+class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return const MaterialApp(
+      debugShowCheckedModeBanner: false,
+      home: PrimePage(),
+    );
+  }
+}
+
+class PrimePage extends StatefulWidget {
+  const PrimePage({super.key});
+
+  @override
+  State<PrimePage> createState() => _PrimePageState();
+}
+
+class _PrimePageState extends State<PrimePage> {
+
+  final startController = TextEditingController();
+  final endController = TextEditingController();
+
+  List<int> primes = [];
+  bool loading = false;
+
+  void calculatePrimes() async {
+
+    int start = int.tryParse(startController.text) ?? 0;
+    int end = int.tryParse(endController.text) ?? 0;
+
+    if (end <= start) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("Invalid range")),
+      );
+      return;
+    }
+
+    setState(() {
+      loading = true;
+      primes.clear();
+    });
+
+    ReceivePort port = ReceivePort();
+
+    await Isolate.spawn(
+      isolatePrimeWorker,
+      [start, end, port.sendPort],
+    );
+
+    port.listen((data) {
+      setState(() {
+        primes = List<int>.from(data);
+        loading = false;
+      });
+
+      // Completion notification
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("Prime calculation complete ✅")),
+      );
+
+      port.close();
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: const Text("Prime Finder")),
+      body: Padding(
+        padding: const EdgeInsets.all(20),
+        child: Column(
+          children: [
+
+            TextField(
+              controller: startController,
+              keyboardType: TextInputType.number,
+              decoration: const InputDecoration(
+                labelText: "Start Range",
+                border: OutlineInputBorder(),
+              ),
+            ),
+
+            const SizedBox(height: 10),
+
+            TextField(
+              controller: endController,
+              keyboardType: TextInputType.number,
+              decoration: const InputDecoration(
+                labelText: "End Range",
+                border: OutlineInputBorder(),
+              ),
+            ),
+
+            const SizedBox(height: 15),
+
+            ElevatedButton(
+              onPressed: calculatePrimes,
+              child: const Text("Find Primes"),
+            ),
+
+            const SizedBox(height: 15),
+
+            if (loading)
+              Column(
+                children: const [
+                  CircularProgressIndicator(),
+                  SizedBox(height: 10),
+                  Text("Calculating primes...")
+                ],
+              ),
+
+            Expanded(
+              child: ListView.builder(
+                itemCount: primes.length,
+                itemBuilder: (context, index) {
+                  return ListTile(
+                    title: Text(primes[index].toString()),
+                  );
+                },
+              ),
+            )
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+
+// ================= ISOLATE WORK =================
+
+void isolatePrimeWorker(List<dynamic> args) {
+
+  int start = args[0];
+  int end = args[1];
+  SendPort sendPort = args[2];
+
+  List<int> result = [];
+
+  for (int i = start; i <= end; i++) {
+    if (isPrime(i)) {
+      result.add(i);
+    }
+  }
+
+  sendPort.send(result);
+}
+
+
+// ================= PRIME CHECK =================
+
+bool isPrime(int n) {
+  if (n <= 1) return false;
+  if (n <= 3) return true;
+  if (n % 2 == 0 || n % 3 == 0) return false;
+
+  for (int i = 5; i * i <= n; i += 6) {
+    if (n % i == 0 || n % (i + 2) == 0) {
+      return false;
+    }
+  }
+  return true;
+}
