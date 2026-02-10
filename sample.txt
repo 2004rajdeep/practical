@@ -1,4 +1,4 @@
-1.-----------------
+1.---------
 import 'package:flutter/material.dart';
 
 void main() {
@@ -12,31 +12,57 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return const MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: HelloScreen(),
+      home: EmojiPage(),
     );
   }
 }
 
-class HelloScreen extends StatelessWidget {
-  const HelloScreen({super.key});
+class EmojiPage extends StatefulWidget {
+  const EmojiPage({super.key});
+
+  @override
+  State<EmojiPage> createState() => _EmojiPageState();
+}
+
+class _EmojiPageState extends State<EmojiPage> {
+
+  String emoji = "😀";
+
+  void changeEmoji() {
+    setState(() {
+      emoji = emoji == "😀" ? "🎉" : "😀";
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(title: const Text("Big Emoji App")),
       body: Center(
-        child: Text(
-          "Hello Flutter",
-          style: TextStyle(
-            fontSize: 28,
-            fontWeight: FontWeight.bold,
-          ),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+
+            Text(
+              emoji,
+              style: const TextStyle(fontSize: 120),
+            ),
+
+            const SizedBox(height: 30),
+
+            ElevatedButton(
+              onPressed: changeEmoji,
+              child: const Text("Change Emoji"),
+            ),
+          ],
         ),
       ),
     );
   }
 }
 
-2------------
+
+2------------ authencation`  
 
 import 'package:flutter/material.dart';
 
@@ -49,7 +75,7 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
+    return const Materi alApp(
       debugShowCheckedModeBanner: false,
       home: LoginPage(),
     );
@@ -154,7 +180,7 @@ class _LoginPageState extends State<LoginPage> {
   }
 }
 
-3.----------
+3.---------- authencation and welcome window
 import 'package:flutter/material.dart';
 
 void main() {
@@ -299,7 +325,7 @@ class WelcomePage extends StatelessWidget {
   }
 }
 
-4.------------------
+4.------------------ theme changes
 
 import 'package:flutter/material.dart';
 
@@ -386,7 +412,7 @@ class HomePage extends StatelessWidget {
   }
 }
 
-5.-----------------
+5.----------------- timer 
 import 'dart:async';
 import 'package:flutter/material.dart';
 
@@ -474,7 +500,7 @@ class _TimerCounterPageState extends State<TimerCounterPage> {
   }
 }
 
-6.-----------
+6.---------------- progress 
 import 'dart:async';
 import 'package:flutter/material.dart';
 
@@ -649,7 +675,7 @@ void backgroundTask(SendPort sendPort) {
 
 }
 
-8.--------------------
+8.-------------------- prime no
 import 'dart:isolate';
 import 'package:flutter/material.dart';
 
@@ -822,3 +848,4 @@ bool isPrime(int n) {
   }
   return true;
 }
+
