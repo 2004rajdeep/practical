@@ -1,2639 +1,1050 @@
-=================================================================
-  MAD LAB PRACTICALS — BCA Sem 6
-  05010106DS02 - Mobile Application Development (Practical)
-  Parul University
-  All 15 Practicals — Corrected & Combined
-=================================================================
-
-
-▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
-  Practical 01 - Hello Flutter Emoji App
-  File: lib/main.dart
-▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
-
-// Practical 1 - Hello Flutter Emoji App
-// FIX: Emoji list was blank in PDF due to font rendering. Added real emoji strings.
-
-import 'dart:math';
-import 'package:flutter/material.dart';
-
-void main() {
-  runApp(const EmojiApp());
-}
-
-class EmojiApp extends StatelessWidget {
-  const EmojiApp({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return const MaterialApp(
-      debugShowCheckedModeBanner: false,
-      title: 'Emoji App',
-      home: EmojiHome(),
-    );
-  }
-}
-
-class EmojiHome extends StatefulWidget {
-  const EmojiHome({super.key});
-
-  @override
-  State<EmojiHome> createState() => _EmojiHomeState();
-}
-
-class _EmojiHomeState extends State<EmojiHome> {
-  // FIX: PDF showed blank boxes — replaced with actual emoji unicode strings
-  final List<String> emojis = [
-    '😀', '😂', '😍', '🤩', '😎', '🥳', '😜', '🤔', '😇',
-  ];
-
-  String currentEmoji = '😀';
-  final Random random = Random();
-
-  void changeEmoji() {
-    setState(() {
-      currentEmoji = emojis[random.nextInt(emojis.length)];
-    });
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Hello Emoji App'),
-        centerTitle: true,
-      ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text(
-              currentEmoji,
-              style: const TextStyle(fontSize: 120),
-            ),
-            const SizedBox(height: 30),
-            ElevatedButton(
-              onPressed: changeEmoji,
-              child: const Text(
-                'Tap Me',
-                style: TextStyle(fontSize: 18),
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-
------------------------------------------------------------------
-
-▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
-  Practical 02 - Simple Login UI (No Backend)
-  File: lib/main.dart
-▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
-
-// Practical 2 - Simple Login UI (No Backend)
-// FIX: Added missing dispose() for TextEditingControllers (memory leak in original)
-// FIX: Added obscureText toggle button for password visibility
-
-import 'package:flutter/material.dart';
-
-void main() {
-  runApp(const LoginApp());
-}
-
-class LoginApp extends StatelessWidget {
-  const LoginApp({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return const MaterialApp(
-      debugShowCheckedModeBanner: false,
-      title: 'Login Screen',
-      home: LoginScreen(),
-    );
-  }
-}
-
-class LoginScreen extends StatefulWidget {
-  const LoginScreen({super.key});
-
-  @override
-  State<LoginScreen> createState() => _LoginScreenState();
-}
-
-class _LoginScreenState extends State<LoginScreen> {
-  final TextEditingController usernameController = TextEditingController();
-  final TextEditingController passwordController = TextEditingController();
-
-  // FIX: Added password visibility toggle
-  bool _obscurePassword = true;
-
-  // FIX: Added dispose to prevent memory leak
-  @override
-  void dispose() {
-    usernameController.dispose();
-    passwordController.dispose();
-    super.dispose();
-  }
-
-  void login() {
-    if (usernameController.text.isNotEmpty &&
-        passwordController.text.isNotEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Welcome!'),
-          backgroundColor: Colors.green,
-          behavior: SnackBarBehavior.floating,
-        ),
-      );
-    } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Please enter all fields'),
-          backgroundColor: Colors.red,
-          behavior: SnackBarBehavior.floating,
-        ),
-      );
-    }
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Login Screen'),
-        centerTitle: true,
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(20),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            TextField(
-              controller: usernameController,
-              decoration: const InputDecoration(
-                labelText: 'Username',
-                border: OutlineInputBorder(),
-                prefixIcon: Icon(Icons.person),
-              ),
-            ),
-            const SizedBox(height: 20),
-            TextField(
-              controller: passwordController,
-              // FIX: toggle-able obscureText
-              obscureText: _obscurePassword,
-              decoration: InputDecoration(
-                labelText: 'Password',
-                border: const OutlineInputBorder(),
-                prefixIcon: const Icon(Icons.lock),
-                suffixIcon: IconButton(
-                  icon: Icon(
-                    _obscurePassword
-                        ? Icons.visibility_off
-                        : Icons.visibility,
-                  ),
-                  onPressed: () {
-                    setState(() {
-                      _obscurePassword = !_obscurePassword;
-                    });
-                  },
-                ),
-              ),
-            ),
-            const SizedBox(height: 30),
-            SizedBox(
-              width: double.infinity,
-              child: ElevatedButton(
-                onPressed: login,
-                child: const Text('Login'),
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-
------------------------------------------------------------------
-
-▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
-  Practical 03 - Email Validation
-  File: lib/main.dart
-▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
-
-// Practical 3 - Email Validation
-// FIX: Replaced fluttertoast package with SnackBar (no extra dependency needed)
-// FIX: fluttertoast doesn't work on Flutter Web; SnackBar works everywhere
-// FIX: Added dispose() for controllers
-// FIX: Added better email validation (must contain '@' AND '.')
-// pubspec.yaml — no extra packages needed (removed fluttertoast dependency)
-
-import 'package:flutter/material.dart';
-
-void main() {
-  runApp(const SmartLoginApp());
-}
-
-class SmartLoginApp extends StatelessWidget {
-  const SmartLoginApp({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return const MaterialApp(
-      debugShowCheckedModeBanner: false,
-      home: LoginForm(),
-    );
-  }
-}
-
-class LoginForm extends StatefulWidget {
-  const LoginForm({super.key});
-
-  @override
-  State<LoginForm> createState() => _LoginFormState();
-}
-
-class _LoginFormState extends State<LoginForm> {
-  final TextEditingController emailController = TextEditingController();
-  final TextEditingController passwordController = TextEditingController();
-  bool isButtonEnabled = false;
-  bool _obscurePassword = true;
-
-  // FIX: Added dispose
-  @override
-  void dispose() {
-    emailController.dispose();
-    passwordController.dispose();
-    super.dispose();
-  }
-
-  void validateForm() {
-    setState(() {
-      // FIX: Better email check — must have '@' and '.'
-      isButtonEnabled = emailController.text.contains('@') &&
-          emailController.text.contains('.') &&
-          passwordController.text.length >= 6;
-    });
-  }
-
-  // FIX: Replaced Fluttertoast.showToast() with SnackBar (no package needed)
-  void showToast() {
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text('Great! You typed a real email! 😊'),
-        backgroundColor: Colors.green,
-        behavior: SnackBarBehavior.floating,
-        duration: Duration(seconds: 2),
-      ),
-    );
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Smart Login Form'),
-        centerTitle: true,
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(20),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            TextField(
-              controller: emailController,
-              onChanged: (_) => validateForm(),
-              keyboardType: TextInputType.emailAddress,
-              decoration: const InputDecoration(
-                labelText: 'Email',
-                border: OutlineInputBorder(),
-                prefixIcon: Icon(Icons.email),
-              ),
-            ),
-            const SizedBox(height: 20),
-            TextField(
-              controller: passwordController,
-              onChanged: (_) => validateForm(),
-              obscureText: _obscurePassword,
-              decoration: InputDecoration(
-                labelText: 'Password (min 6 chars)',
-                border: const OutlineInputBorder(),
-                prefixIcon: const Icon(Icons.lock),
-                suffixIcon: IconButton(
-                  icon: Icon(_obscurePassword
-                      ? Icons.visibility_off
-                      : Icons.visibility),
-                  onPressed: () =>
-                      setState(() => _obscurePassword = !_obscurePassword),
-                ),
-              ),
-            ),
-            const SizedBox(height: 30),
-            SizedBox(
-              width: double.infinity,
-              child: ElevatedButton(
-                // FIX: null when disabled so Flutter greys it out properly
-                onPressed: isButtonEnabled ? showToast : null,
-                child: const Text('Login'),
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-
------------------------------------------------------------------
-
-▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
-  Practical 04 - Theme Color Changer
-  File: lib/main.dart
-▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
-
-// Practical 4 - Theme Color Changer
-// FIX: const MaterialApp had home: ThemeChangerScreen() which is NOT const-compatible
-//      because ThemeChangerScreen is StatefulWidget — removed const from MaterialApp
-// FIX: Button text color was invisible on colored buttons — added foregroundColor: white
-// FIX: Added AnimatedContainer for smooth color transition
-
-import 'package:flutter/material.dart';
-
-void main() {
-  runApp(const ThemeChangerApp());
-}
-
-class ThemeChangerApp extends StatelessWidget {
-  const ThemeChangerApp({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    // FIX: removed 'const' from MaterialApp — ThemeChangerScreen is StatefulWidget
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      home: const ThemeChangerScreen(),
-    );
-  }
-}
-
-class ThemeChangerScreen extends StatefulWidget {
-  const ThemeChangerScreen({super.key});
-
-  @override
-  State<ThemeChangerScreen> createState() => _ThemeChangerScreenState();
-}
-
-class _ThemeChangerScreenState extends State<ThemeChangerScreen> {
-  Color backgroundColor = Colors.white;
-
-  void changeColor(Color color) {
-    setState(() {
-      backgroundColor = color;
-    });
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      // FIX: Used AnimatedContainer for smooth background transition
-      backgroundColor: backgroundColor,
-      appBar: AppBar(
-        title: const Text('Theme Color Changer'),
-        centerTitle: true,
-      ),
-      body: AnimatedContainer(
-        duration: const Duration(milliseconds: 400),
-        color: backgroundColor,
-        child: Center(
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.blue,
-                  // FIX: foregroundColor ensures text is readable on button
-                  foregroundColor: Colors.white,
-                ),
-                onPressed: () => changeColor(Colors.blue.shade100),
-                child: const Text('Blue'),
-              ),
-              ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.orange,
-                  foregroundColor: Colors.white,
-                ),
-                onPressed: () => changeColor(Colors.orange.shade100),
-                child: const Text('Orange'),
-              ),
-              ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.green,
-                  foregroundColor: Colors.white,
-                ),
-                onPressed: () => changeColor(Colors.green.shade100),
-                child: const Text('Green'),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-
------------------------------------------------------------------
-
-▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
-  Practical 05 - Counter with Auto Increment
-  File: lib/main.dart
-▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
-
-// Practical 5 - Counter with Auto Increment
-// FIX: const MaterialApp had home: CounterScreen() — StatefulWidget, not const-safe
-// FIX: startCounter() could create multiple timers if tapped repeatedly — added guard
-// FIX: dispose() was correct — kept and verified
-// FIX: Added isRunning state so Start button disables while timer is active
-
-import 'dart:async';
-import 'package:flutter/material.dart';
-
-void main() {
-  runApp(const CounterApp());
-}
-
-class CounterApp extends StatelessWidget {
-  const CounterApp({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    // FIX: removed 'const' — CounterScreen() is StatefulWidget
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      home: const CounterScreen(),
-    );
-  }
-}
-
-class CounterScreen extends StatefulWidget {
-  const CounterScreen({super.key});
-
-  @override
-  State<CounterScreen> createState() => _CounterScreenState();
-}
-
-class _CounterScreenState extends State<CounterScreen> {
-  int counter = 0;
-  Timer? timer;
-  // FIX: Track running state to disable Start button when already running
-  bool isRunning = false;
-
-  void startCounter() {
-    // FIX: Guard — do nothing if already running (original allowed multiple timers)
-    if (isRunning) return;
-    setState(() => isRunning = true);
-    timer = Timer.periodic(
-      const Duration(seconds: 1),
-      (Timer t) {
-        setState(() {
-          counter++;
-        });
-      },
-    );
-  }
-
-  void pauseCounter() {
-    timer?.cancel();
-    timer = null;
-    setState(() => isRunning = false);
-  }
-
-  void resetCounter() {
-    pauseCounter();
-    setState(() {
-      counter = 0;
-    });
-  }
-
-  @override
-  void dispose() {
-    timer?.cancel();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Auto Increment Counter'),
-        centerTitle: true,
-      ),
-      body: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Text(
-            counter.toString(),
-            style: const TextStyle(
-              fontSize: 80,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-          const SizedBox(height: 40),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              ElevatedButton(
-                // FIX: disabled when already running
-                onPressed: isRunning ? null : startCounter,
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.green,
-                  foregroundColor: Colors.white,
-                ),
-                child: const Text('Start'),
-              ),
-              ElevatedButton(
-                onPressed: pauseCounter,
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.orange,
-                  foregroundColor: Colors.white,
-                ),
-                child: const Text('Pause'),
-              ),
-              ElevatedButton(
-                onPressed: resetCounter,
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.red,
-                  foregroundColor: Colors.white,
-                ),
-                child: const Text('Reset'),
-              ),
-            ],
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-
------------------------------------------------------------------
-
-▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
-  Practical 06 - Loading Screen (Progress Bar)
-  File: lib/main.dart
-▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
-
-// Practical 6 - Loading Screen (Progress Bar)
-// FIX: const MaterialApp had home: LoadingScreen() — StatefulWidget, not const-safe
-// FIX: progress += 0.01 can accumulate floating point errors (e.g. 0.990000001)
-//      Fixed by clamping value cleanly
-// FIX: Added percentage text display below progress bar
-// FIX: Disabled Start button while loading is in progress
-
-import 'dart:async';
-import 'package:flutter/material.dart';
-
-void main() {
-  runApp(const LoadingApp());
-}
-
-class LoadingApp extends StatelessWidget {
-  const LoadingApp({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    // FIX: removed 'const' — LoadingScreen() is StatefulWidget
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      home: const LoadingScreen(),
-    );
-  }
-}
-
-class LoadingScreen extends StatefulWidget {
-  const LoadingScreen({super.key});
-
-  @override
-  State<LoadingScreen> createState() => _LoadingScreenState();
-}
-
-class _LoadingScreenState extends State<LoadingScreen> {
-  double progress = 0.0;
-  String message = '';
-  Timer? timer;
-  bool isLoading = false;
-
-  void startLoading() {
-    // FIX: Prevent double-start
-    if (isLoading) return;
-
-    setState(() {
-      progress = 0.0;
-      message = 'Loading your awesome content...';
-      isLoading = true;
-    });
-
-    timer?.cancel();
-    timer = Timer.periodic(const Duration(milliseconds: 100), (Timer t) {
-      setState(() {
-        // FIX: Use clampDouble to avoid floating point overshoot
-        progress = (progress + 0.01).clamp(0.0, 1.0);
-        if (progress >= 1.0) {
-          message = 'Finished! 🎉';
-          isLoading = false;
-          t.cancel();
-        }
-      });
-    });
-  }
-
-  @override
-  void dispose() {
-    timer?.cancel();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Loading Screen'),
-        centerTitle: true,
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(20),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            LinearProgressIndicator(
-              value: progress,
-              minHeight: 20,
-              color: Colors.blue,
-              backgroundColor: Colors.grey.shade300,
-              borderRadius: BorderRadius.circular(10),
-            ),
-            const SizedBox(height: 12),
-            // FIX: Added percentage label
-            Text(
-              '${(progress * 100).toStringAsFixed(0)}%',
-              style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(height: 20),
-            Text(
-              message,
-              style: const TextStyle(fontSize: 18),
-            ),
-            const SizedBox(height: 40),
-            ElevatedButton(
-              // FIX: disabled while loading
-              onPressed: isLoading ? null : startLoading,
-              child: const Text('Start Loading'),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-
------------------------------------------------------------------
-
-▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
-  Practical 07 - Reminder App (Simple Notifications)
-  File: lib/main.dart
-▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
-
-// Practical 7 - Reminder App (Simple Notifications)
-// DEPENDENCY: flutter_local_notifications: ^17.0.0
-// Android: add to AndroidManifest.xml inside <manifest>:
-//   <uses-permission android:name="android.permission.POST_NOTIFICATIONS"/>
-//
-// FIX: initializeNotification() was void but called async — should return Future<void>
-// FIX: Added mounted check before showSnackBar (widget may be disposed by then)
-// FIX: Added dispose() for TextEditingController
-// FIX: Reminder fires even if widget is disposed — added mounted guard
-// FIX: Added permission request for Android 13+ (required for notifications)
-
-import 'package:flutter/material.dart';
-import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-
-void main() {
-  runApp(const ReminderApp());
-}
-
-class ReminderApp extends StatelessWidget {
-  const ReminderApp({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      title: 'Reminder App',
-      home: const ReminderScreen(),
-    );
-  }
-}
-
-class ReminderScreen extends StatefulWidget {
-  const ReminderScreen({super.key});
-
-  @override
-  State<ReminderScreen> createState() => _ReminderScreenState();
-}
-
-class _ReminderScreenState extends State<ReminderScreen> {
-  final TextEditingController _controller = TextEditingController();
-
-  final FlutterLocalNotificationsPlugin notificationsPlugin =
-      FlutterLocalNotificationsPlugin();
-
-  // FIX: Added dispose for controller
-  @override
-  void dispose() {
-    _controller.dispose();
-    super.dispose();
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    initializeNotification();
-  }
-
-  // FIX: Changed return type to Future<void> for proper async handling
-  Future<void> initializeNotification() async {
-    const AndroidInitializationSettings androidSettings =
-        AndroidInitializationSettings('@mipmap/ic_launcher');
-
-    const InitializationSettings settings =
-        InitializationSettings(android: androidSettings);
-
-    await notificationsPlugin.initialize(settings);
-
-    // FIX: Request notification permission for Android 13+
-    final androidPlugin = notificationsPlugin
-        .resolvePlatformSpecificImplementation<
-            AndroidFlutterLocalNotificationsPlugin>();
-    await androidPlugin?.requestNotificationsPermission();
-  }
-
-  Future<void> showNotification(String message) async {
-    const AndroidNotificationDetails androidDetails =
-        AndroidNotificationDetails(
-      'reminder_channel',
-      'Reminders',
-      channelDescription: 'Channel for reminder notifications',
-      importance: Importance.max,
-      priority: Priority.high,
-    );
-
-    const NotificationDetails notificationDetails =
-        NotificationDetails(android: androidDetails);
-
-    await notificationsPlugin.show(
-      0,
-      'Reminder 🔔',
-      message,
-      notificationDetails,
-    );
-  }
-
-  void setReminder() {
-    final message = _controller.text.trim();
-    if (message.isEmpty) return;
-
-    // FIX: Capture mounted state before async gap
-    final messenger = ScaffoldMessenger.of(context);
-
-    Future.delayed(const Duration(seconds: 5), () {
-      // FIX: Only show notification if widget is still active
-      if (mounted) {
-        showNotification(message);
-      }
-    });
-
-    messenger.showSnackBar(
-      const SnackBar(
-        content: Text('Reminder set! Notification in 5 seconds.'),
-        behavior: SnackBarBehavior.floating,
-      ),
-    );
-    _controller.clear();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Simple Reminder App'),
-        backgroundColor: Colors.blue,
-        foregroundColor: Colors.white,
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          children: [
-            TextField(
-              controller: _controller,
-              decoration: const InputDecoration(
-                labelText: 'Enter reminder message',
-                border: OutlineInputBorder(),
-                prefixIcon: Icon(Icons.alarm),
-              ),
-            ),
-            const SizedBox(height: 20),
-            SizedBox(
-              width: double.infinity,
-              child: ElevatedButton.icon(
-                onPressed: setReminder,
-                icon: const Icon(Icons.alarm_add),
-                label: const Text('Set Reminder'),
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-
------------------------------------------------------------------
-
-▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
-  Practical 08 - Prime Number Finder
-  File: lib/main.dart
-▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
-
-// Practical 8 - Prime Number Finder
-// DEPENDENCY: flutter_local_notifications: ^17.0.0
-//
-// FIX: startCalculation() uses int.parse() without try-catch — crashes on empty/invalid input
-// FIX: No validation for lower > upper range
-// FIX: Notification title had emoji rendering issue in PDF — fixed string
-// FIX: Added mounted check before setState after async operation
-// FIX: Added dispose() for controllers
-// FIX: Added permission request for Android 13+
-
-import 'package:flutter/material.dart';
-import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-
-void main() {
-  runApp(const PrimeApp());
-}
-
-class PrimeApp extends StatelessWidget {
-  const PrimeApp({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      home: const PrimeScreen(),
-    );
-  }
-}
-
-class PrimeScreen extends StatefulWidget {
-  const PrimeScreen({super.key});
-
-  @override
-  State<PrimeScreen> createState() => _PrimeScreenState();
-}
-
-class _PrimeScreenState extends State<PrimeScreen> {
-  final TextEditingController lowerController = TextEditingController();
-  final TextEditingController upperController = TextEditingController();
-
-  List<int> primes = [];
-  bool isLoading = false;
-
-  final FlutterLocalNotificationsPlugin notificationsPlugin =
-      FlutterLocalNotificationsPlugin();
-
-  // FIX: Added dispose
-  @override
-  void dispose() {
-    lowerController.dispose();
-    upperController.dispose();
-    super.dispose();
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    initializeNotification();
-  }
-
-  Future<void> initializeNotification() async {
-    const AndroidInitializationSettings androidSettings =
-        AndroidInitializationSettings('@mipmap/ic_launcher');
-
-    const InitializationSettings settings =
-        InitializationSettings(android: androidSettings);
-
-    await notificationsPlugin.initialize(settings);
-
-    // FIX: Request permission for Android 13+
-    final androidPlugin = notificationsPlugin
-        .resolvePlatformSpecificImplementation<
-            AndroidFlutterLocalNotificationsPlugin>();
-    await androidPlugin?.requestNotificationsPermission();
-  }
-
-  Future<void> showNotification(int count) async {
-    const AndroidNotificationDetails androidDetails =
-        AndroidNotificationDetails(
-      'prime_channel',
-      'Prime Finder',
-      channelDescription: 'Notifies when prime calculation is done',
-      importance: Importance.max,
-      priority: Priority.high,
-    );
-
-    const NotificationDetails details =
-        NotificationDetails(android: androidDetails);
-
-    await notificationsPlugin.show(
-      0,
-      'Prime Calculation Done ✅',
-      'Found $count prime numbers. Tap to view.',
-      details,
-    );
-  }
-
-  bool isPrime(int n) {
-    if (n <= 1) return false;
-    if (n == 2) return true;
-    if (n % 2 == 0) return false;
-    // FIX: More efficient — check up to sqrt(n) only
-    for (int i = 3; i * i <= n; i += 2) {
-      if (n % i == 0) return false;
-    }
-    return true;
-  }
-
-  Future<void> findPrimesAsync(int low, int high) async {
-    setState(() {
-      isLoading = true;
-      primes.clear();
-    });
-
-    await Future.delayed(const Duration(milliseconds: 500));
-
-    final List<int> result = [];
-    for (int i = low; i <= high; i++) {
-      if (isPrime(i)) result.add(i);
-    }
-
-    // FIX: mounted check before setState (async gap may have unmounted widget)
-    if (!mounted) return;
-
-    setState(() {
-      primes = result;
-      isLoading = false;
-    });
-
-    showNotification(result.length);
-  }
-
-  void startCalculation() {
-    // FIX: Validate input — original would crash on empty/non-numeric input
-    final low = int.tryParse(lowerController.text.trim());
-    final high = int.tryParse(upperController.text.trim());
-
-    if (low == null || high == null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Please enter valid numbers'),
-          backgroundColor: Colors.red,
-          behavior: SnackBarBehavior.floating,
-        ),
-      );
-      return;
-    }
-
-    // FIX: Validate range
-    if (low > high) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Lower range must be ≤ Upper range'),
-          backgroundColor: Colors.orange,
-          behavior: SnackBarBehavior.floating,
-        ),
-      );
-      return;
-    }
-
-    findPrimesAsync(low, high);
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Prime Number Finder'),
-        backgroundColor: Colors.green,
-        foregroundColor: Colors.white,
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          children: [
-            TextField(
-              controller: lowerController,
-              keyboardType: TextInputType.number,
-              decoration: const InputDecoration(
-                labelText: 'Lower Range',
-                border: OutlineInputBorder(),
-              ),
-            ),
-            const SizedBox(height: 10),
-            TextField(
-              controller: upperController,
-              keyboardType: TextInputType.number,
-              decoration: const InputDecoration(
-                labelText: 'Upper Range',
-                border: OutlineInputBorder(),
-              ),
-            ),
-            const SizedBox(height: 20),
-            ElevatedButton(
-              // FIX: Disabled while loading
-              onPressed: isLoading ? null : startCalculation,
-              child: const Text('Find Primes'),
-            ),
-            const SizedBox(height: 20),
-            if (isLoading)
-              const CircularProgressIndicator()
-            else if (primes.isEmpty)
-              const Text('No primes found yet.')
-            else
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      'Found ${primes.length} prime(s):',
-                      style: const TextStyle(fontWeight: FontWeight.bold),
-                    ),
-                    const SizedBox(height: 8),
-                    Expanded(
-                      child: ListView.builder(
-                        itemCount: primes.length,
-                        itemBuilder: (context, index) {
-                          return ListTile(
-                            dense: true,
-                            leading: const Icon(Icons.fiber_manual_record,
-                                size: 12, color: Colors.green),
-                            title: Text(primes[index].toString()),
-                          );
-                        },
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-
------------------------------------------------------------------
-
-▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
-  Practical 09 - Contacts Viewer
-  File: lib/main.dart
-▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
-
-// Practical 9 - Contacts Viewer (Option A - No permissions)
-// FIX: Original used plain Icons.person — replaced with colored CircleAvatar initials
-// FIX: Changed StatelessWidget to StatefulWidget to support search
-// FIX: Added search functionality
-// FIX: Added onTap to copy number to clipboard
-// No extra packages needed
-
-import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-
-void main() {
-  runApp(const ContactsApp());
-}
-
-class ContactsApp extends StatelessWidget {
-  const ContactsApp({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      home: const ContactsScreen(),
-    );
-  }
-}
-
-class ContactsScreen extends StatefulWidget {
-  const ContactsScreen({super.key});
-
-  @override
-  State<ContactsScreen> createState() => _ContactsScreenState();
-}
-
-class _ContactsScreenState extends State<ContactsScreen> {
-  // FIX: Moved contacts to state so search can filter them
-  final List<Map<String, String>> _allContacts = const [
-    {'name': 'Ravi Patel',  'number': '9876543210'},
-    {'name': 'Neha Shah',   'number': '9123456789'},
-    {'name': 'Amit Kumar',  'number': '9988776655'},
-    {'name': 'Priya Mehta', 'number': '9012345678'},
-    {'name': 'Suresh Rao',  'number': '9871234560'},
-    {'name': 'Deepa Nair',  'number': '9765432109'},
-  ];
-
-  List<Map<String, String>> _filtered = [];
-  final TextEditingController _searchController = TextEditingController();
-
-  @override
-  void initState() {
-    super.initState();
-    _filtered = List.from(_allContacts);
-    _searchController.addListener(_onSearch);
-  }
-
-  @override
-  void dispose() {
-    _searchController.dispose();
-    super.dispose();
-  }
-
-  void _onSearch() {
-    final q = _searchController.text.toLowerCase();
-    setState(() {
-      _filtered = _allContacts
-          .where((c) =>
-              c['name']!.toLowerCase().contains(q) ||
-              c['number']!.contains(q))
-          .toList();
-    });
-  }
-
-  Color _avatarColor(String name) {
-    const colors = [
-      Colors.blue, Colors.teal, Colors.purple,
-      Colors.orange, Colors.green, Colors.red,
-    ];
-    return colors[name.codeUnitAt(0) % colors.length];
-  }
-
-  void _copyNumber(String number) {
-    Clipboard.setData(ClipboardData(text: number));
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text('Copied $number'),
-        behavior: SnackBarBehavior.floating,
-        duration: const Duration(seconds: 2),
-      ),
-    );
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text(
-          'Contacts Viewer',
-          style: TextStyle(color: Colors.white),
-        ),
-        backgroundColor: Colors.blue,
-        // FIX: Search bar in AppBar bottom
-        bottom: PreferredSize(
-          preferredSize: const Size.fromHeight(52),
-          child: Padding(
-            padding: const EdgeInsets.fromLTRB(12, 0, 12, 8),
-            child: TextField(
-              controller: _searchController,
-              decoration: InputDecoration(
-                hintText: 'Search contacts...',
-                prefixIcon: const Icon(Icons.search),
-                filled: true,
-                fillColor: Colors.white,
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(30),
-                  borderSide: BorderSide.none,
-                ),
-                contentPadding: EdgeInsets.zero,
-              ),
-            ),
-          ),
-        ),
-      ),
-      body: _filtered.isEmpty
-          ? const Center(child: Text('No contacts found'))
-          : ListView.separated(
-              itemCount: _filtered.length,
-              separatorBuilder: (_, __) =>
-                  const Divider(height: 1, indent: 72),
-              itemBuilder: (context, index) {
-                final c = _filtered[index];
-                return ListTile(
-                  // FIX: Colored avatar with initial instead of generic icon
-                  leading: CircleAvatar(
-                    backgroundColor: _avatarColor(c['name']!),
-                    child: Text(
-                      c['name']![0].toUpperCase(),
-                      style: const TextStyle(
-                          color: Colors.white, fontWeight: FontWeight.bold),
-                    ),
-                  ),
-                  title: Text(c['name']!,
-                      style: const TextStyle(fontWeight: FontWeight.w600)),
-                  subtitle: Text(c['number']!),
-                  // FIX: Tap to copy number
-                  trailing: IconButton(
-                    icon: const Icon(Icons.copy, size: 20),
-                    onPressed: () => _copyNumber(c['number']!),
-                  ),
-                );
-              },
-            ),
-    );
-  }
-}
-
-
------------------------------------------------------------------
-
-▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
-  Practical 10 - Dynamic Cards Generator
-  File: lib/main.dart
-▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
-
-// Practical 10 - Dynamic Cards Generator
-// FIX: goToCardsPage() used int.parse() without try-catch — crashes on empty input
-// FIX: getRandomColor() called inside ListView.builder rebuilds = colors change on scroll
-//      Fixed by pre-generating colors list in initState
-// FIX: CardsScreen had 'final Random random' in StatelessWidget — colors regenerate
-//      every build. Pre-compute colors once.
-// FIX: Added input validation (empty field, zero or negative count)
-// FIX: Added dispose() for controller
-
-import 'dart:math';
-import 'package:flutter/material.dart';
-
-void main() {
-  runApp(const CardApp());
-}
-
-class CardApp extends StatelessWidget {
-  const CardApp({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      home: const InputScreen(),
-    );
-  }
-}
-
-// ─── First Screen ────────────────────────────────────────────────────────────
-class InputScreen extends StatefulWidget {
-  const InputScreen({super.key});
-
-  @override
-  State<InputScreen> createState() => _InputScreenState();
-}
-
-class _InputScreenState extends State<InputScreen> {
-  final TextEditingController controller = TextEditingController();
-
-  // FIX: Added dispose
-  @override
-  void dispose() {
-    controller.dispose();
-    super.dispose();
-  }
-
-  void goToCardsPage() {
-    // FIX: Validate before parsing — original crashed on empty/invalid input
-    final count = int.tryParse(controller.text.trim());
-
-    if (count == null || count <= 0) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Please enter a valid positive number'),
-          backgroundColor: Colors.red,
-          behavior: SnackBarBehavior.floating,
-        ),
-      );
-      return;
-    }
-
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => CardsScreen(cardCount: count),
-      ),
-    );
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Dynamic Cards Generator'),
-        backgroundColor: Colors.blue,
-        foregroundColor: Colors.white,
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            TextField(
-              controller: controller,
-              keyboardType: TextInputType.number,
-              decoration: const InputDecoration(
-                labelText: 'Enter number of cards',
-                border: OutlineInputBorder(),
-                prefixIcon: Icon(Icons.format_list_numbered),
-              ),
-            ),
-            const SizedBox(height: 20),
-            SizedBox(
-              width: double.infinity,
-              child: ElevatedButton.icon(
-                onPressed: goToCardsPage,
-                icon: const Icon(Icons.auto_awesome),
-                label: const Text('Generate Cards'),
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-// ─── Second Screen ────────────────────────────────────────────────────────────
-class CardsScreen extends StatefulWidget {
-  final int cardCount;
-  const CardsScreen({super.key, required this.cardCount});
-
-  @override
-  State<CardsScreen> createState() => _CardsScreenState();
-}
-
-class _CardsScreenState extends State<CardsScreen> {
-  // FIX: Pre-generate colors once in initState so they don't change on scroll/rebuild
-  late final List<Color> _colors;
-
-  @override
-  void initState() {
-    super.initState();
-    final random = Random();
-    _colors = List.generate(
-      widget.cardCount,
-      (_) => Color.fromARGB(
-        255,
-        100 + random.nextInt(156), // avoid very dark colors
-        100 + random.nextInt(156),
-        100 + random.nextInt(156),
-      ),
-    );
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('${widget.cardCount} Generated Cards'),
-        backgroundColor: Colors.green,
-        foregroundColor: Colors.white,
-      ),
-      body: ListView.builder(
-        itemCount: widget.cardCount,
-        itemBuilder: (context, index) {
-          return Card(
-            // FIX: Use pre-generated color — stable across scrolls
-            color: _colors[index],
-            margin: const EdgeInsets.all(10),
-            elevation: 6,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(12),
-            ),
-            child: ListTile(
-              contentPadding:
-                  const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-              title: Text(
-                'Card ${index + 1}',
-                style: const TextStyle(
-                  color: Colors.white,
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              subtitle: Text(
-                'Item number ${index + 1} of ${widget.cardCount}',
-                style: const TextStyle(color: Colors.white70),
-              ),
-            ),
-          );
-        },
-      ),
-    );
-  }
-}
-
-
------------------------------------------------------------------
-
-▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
-  Practical 11 - Fake Dialer
-  File: lib/main.dart
-▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
-
-// Practical 11 - Fake Dialer
-// FIX: No validation — empty number showed dialog with "Calling ..."
-// FIX: Added phone number format validation (10 digits)
-// FIX: Added dispose() for controller
-// FIX: Added dial pad UI for a realistic dialer feel
-
-import 'package:flutter/material.dart';
-
-void main() {
-  runApp(const FakeDialerApp());
-}
-
-class FakeDialerApp extends StatelessWidget {
-  const FakeDialerApp({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      home: const DialerScreen(),
-    );
-  }
-}
-
-class DialerScreen extends StatefulWidget {
-  const DialerScreen({super.key});
-
-  @override
-  State<DialerScreen> createState() => _DialerScreenState();
-}
-
-class _DialerScreenState extends State<DialerScreen> {
-  final TextEditingController phoneController = TextEditingController();
-
-  // FIX: Added dispose
-  @override
-  void dispose() {
-    phoneController.dispose();
-    super.dispose();
-  }
-
-  void showCallDialog() {
-    final number = phoneController.text.trim();
-
-    // FIX: Validate — empty check was in original but no format check
-    if (number.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Please enter a phone number'),
-          backgroundColor: Colors.red,
-          behavior: SnackBarBehavior.floating,
-        ),
-      );
-      return;
-    }
-
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: const Row(
-          children: [
-            Icon(Icons.call, color: Colors.green),
-            SizedBox(width: 8),
-            Text('Calling'),
-          ],
-        ),
-        content: Text('📞 Calling $number...'),
-        actions: [
-          TextButton.icon(
-            onPressed: () => Navigator.pop(context),
-            icon: const Icon(Icons.call_end, color: Colors.red),
-            label: const Text(
-              'End Call',
-              style: TextStyle(color: Colors.red),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  // FIX: Dial pad button helper
-  void _appendDigit(String digit) {
-    setState(() {
-      phoneController.text += digit;
-    });
-  }
-
-  Widget _dialButton(String label) {
-    return ElevatedButton(
-      onPressed: () => _appendDigit(label),
-      style: ElevatedButton.styleFrom(
-        shape: const CircleBorder(),
-        padding: const EdgeInsets.all(18),
-        backgroundColor: Colors.grey.shade200,
-        foregroundColor: Colors.black87,
-        elevation: 2,
-      ),
-      child: Text(label, style: const TextStyle(fontSize: 20)),
-    );
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Fake Dialer'),
-        backgroundColor: Colors.green,
-        foregroundColor: Colors.white,
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          children: [
-            const SizedBox(height: 16),
-            TextField(
-              controller: phoneController,
-              keyboardType: TextInputType.phone,
-              textAlign: TextAlign.center,
-              style: const TextStyle(fontSize: 28, letterSpacing: 4),
-              decoration: const InputDecoration(
-                labelText: 'Enter phone number',
-                border: OutlineInputBorder(),
-                prefixIcon: Icon(Icons.phone),
-              ),
-            ),
-            const SizedBox(height: 20),
-            // FIX: Simple dial pad
-            for (var row in [
-              ['1', '2', '3'],
-              ['4', '5', '6'],
-              ['7', '8', '9'],
-              ['*', '0', '#'],
-            ])
-              Padding(
-                padding: const EdgeInsets.symmetric(vertical: 4),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: row.map(_dialButton).toList(),
-                ),
-              ),
-            const SizedBox(height: 20),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                ElevatedButton.icon(
-                  onPressed: showCallDialog,
-                  icon: const Icon(Icons.call),
-                  label: const Text('Call'),
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.green,
-                    foregroundColor: Colors.white,
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 32, vertical: 14),
-                  ),
-                ),
-                ElevatedButton.icon(
-                  onPressed: () {
-                    if (phoneController.text.isNotEmpty) {
-                      phoneController.text = phoneController.text
-                          .substring(0, phoneController.text.length - 1);
-                    }
-                  },
-                  icon: const Icon(Icons.backspace),
-                  label: const Text('Del'),
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.red,
-                    foregroundColor: Colors.white,
-                  ),
-                ),
-              ],
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-
------------------------------------------------------------------
-
-▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
-  Practical 12 - Basic Messaging Mock App
-  File: lib/main.dart
-▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
-
-// Practical 12 - Basic Messaging Mock App
-// FIX: Added dispose() for messageController and ScrollController
-// FIX: ListView did not auto-scroll to bottom after new message — added ScrollController
-// FIX: No timestamp on messages — added time display
-// FIX: Send on keyboard 'done' action added
-
-import 'package:flutter/material.dart';
-
-void main() {
-  runApp(const MessagingApp());
-}
-
-class MessagingApp extends StatelessWidget {
-  const MessagingApp({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      home: const ChatScreen(),
-    );
-  }
-}
-
-class ChatScreen extends StatefulWidget {
-  const ChatScreen({super.key});
-
-  @override
-  State<ChatScreen> createState() => _ChatScreenState();
-}
-
-class _ChatScreenState extends State<ChatScreen> {
-  final TextEditingController messageController = TextEditingController();
-  // FIX: Added ScrollController for auto-scroll to bottom
-  final ScrollController _scrollController = ScrollController();
-
-  // FIX: Store message + timestamp
-  final List<Map<String, String>> messages = [];
-
-  // FIX: Added dispose
-  @override
-  void dispose() {
-    messageController.dispose();
-    _scrollController.dispose();
-    super.dispose();
-  }
-
-  void sendMessage() {
-    if (messageController.text.trim().isEmpty) return;
-
-    final now = TimeOfDay.now();
-    final time =
-        '${now.hour.toString().padLeft(2, '0')}:${now.minute.toString().padLeft(2, '0')}';
-
-    setState(() {
-      messages.add({
-        'text': messageController.text.trim(),
-        'time': time,
-      });
-    });
-
-    messageController.clear();
-
-    // FIX: Auto-scroll to latest message
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (_scrollController.hasClients) {
-        _scrollController.animateTo(
-          _scrollController.position.maxScrollExtent,
-          duration: const Duration(milliseconds: 300),
-          curve: Curves.easeOut,
-        );
-      }
-    });
-  }
-
-  void clearMessages() {
-    setState(() {
-      messages.clear();
-    });
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Messaging Mock App'),
-        backgroundColor: Colors.teal,
-        foregroundColor: Colors.white,
-        actions: [
-          IconButton(
-            onPressed: clearMessages,
-            icon: const Icon(Icons.delete_sweep),
-            tooltip: 'Clear all',
-          ),
-        ],
-      ),
-      body: Column(
-        children: [
-          // Message list
-          Expanded(
-            child: messages.isEmpty
-                ? const Center(
-                    child: Text(
-                      'No messages yet.\nType something below!',
-                      textAlign: TextAlign.center,
-                      style: TextStyle(color: Colors.grey),
-                    ),
-                  )
-                : ListView.builder(
-                    controller: _scrollController,
-                    padding: const EdgeInsets.all(8),
-                    itemCount: messages.length,
-                    itemBuilder: (context, index) {
-                      final msg = messages[index];
-                      return Align(
-                        alignment: Alignment.centerRight,
-                        child: Container(
-                          margin: const EdgeInsets.symmetric(
-                              vertical: 4, horizontal: 8),
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 14, vertical: 10),
-                          decoration: BoxDecoration(
-                            color: Colors.teal.shade400,
-                            borderRadius: const BorderRadius.only(
-                              topLeft: Radius.circular(16),
-                              topRight: Radius.circular(16),
-                              bottomLeft: Radius.circular(16),
-                              bottomRight: Radius.circular(4),
-                            ),
-                          ),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.end,
-                            children: [
-                              Text(
-                                msg['text']!,
-                                style: const TextStyle(
-                                    color: Colors.white, fontSize: 15),
-                              ),
-                              // FIX: Timestamp
-                              Text(
-                                msg['time']!,
-                                style: const TextStyle(
-                                    color: Colors.white70, fontSize: 10),
-                              ),
-                            ],
-                          ),
-                        ),
-                      );
-                    },
-                  ),
-          ),
-
-          // Input area
-          Container(
-            padding: const EdgeInsets.all(8),
-            decoration: BoxDecoration(
-              color: Colors.white,
-              boxShadow: [
-                BoxShadow(
-                    color: Colors.black12,
-                    blurRadius: 4,
-                    offset: const Offset(0, -1))
-              ],
-            ),
-            child: Row(
-              children: [
-                Expanded(
-                  child: TextField(
-                    controller: messageController,
-                    // FIX: Send on keyboard 'done' action
-                    onSubmitted: (_) => sendMessage(),
-                    textInputAction: TextInputAction.send,
-                    decoration: InputDecoration(
-                      hintText: 'Type a message...',
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(24),
-                        borderSide: BorderSide.none,
-                      ),
-                      filled: true,
-                      fillColor: Colors.grey.shade100,
-                      contentPadding: const EdgeInsets.symmetric(
-                          horizontal: 16, vertical: 10),
-                    ),
-                  ),
-                ),
-                const SizedBox(width: 8),
-                FloatingActionButton(
-                  mini: true,
-                  onPressed: sendMessage,
-                  backgroundColor: Colors.teal,
-                  child: const Icon(Icons.send, color: Colors.white),
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-
------------------------------------------------------------------
-
-▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
-  Practical 13 - File Save Notes App
-  File: lib/main.dart
-▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
-
-// Practical 13 - File Save (Text File) – Notes App
-// DEPENDENCY: path_provider: ^2.1.0
-//
-// FIX: saveNote() called showSnackBar without mounted check — can crash if navigated away
-// FIX: Added dispose() for noteController
-// FIX: readNote() showed generic error — improved message
-// FIX: Added append mode option so new notes don't overwrite old ones
-// FIX: Added note counter display
-
-import 'dart:io';
-import 'package:flutter/material.dart';
-import 'package:path_provider/path_provider.dart';
-
-void main() {
-  runApp(const NotesApp());
-}
-
-class NotesApp extends StatelessWidget {
-  const NotesApp({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      home: const NotesScreen(),
-    );
-  }
-}
-
-class NotesScreen extends StatefulWidget {
-  const NotesScreen({super.key});
-
-  @override
-  State<NotesScreen> createState() => _NotesScreenState();
-}
-
-class _NotesScreenState extends State<NotesScreen> {
-  final TextEditingController noteController = TextEditingController();
-  String savedNote = '';
-
-  // FIX: Added dispose
-  @override
-  void dispose() {
-    noteController.dispose();
-    super.dispose();
-  }
-
-  Future<String> getFilePath() async {
-    final directory = await getApplicationDocumentsDirectory();
-    return '${directory.path}/note.txt';
-  }
-
-  Future<void> saveNote() async {
-    final text = noteController.text.trim();
-    if (text.isEmpty) {
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Cannot save empty note'),
-            backgroundColor: Colors.orange,
-            behavior: SnackBarBehavior.floating,
-          ),
-        );
-      }
-      return;
-    }
-
-    try {
-      final path = await getFilePath();
-      final file = File(path);
-      // FIX: Append with timestamp so notes accumulate instead of overwriting
-      final timestamp = DateTime.now().toString().substring(0, 16);
-      await file.writeAsString(
-        '[$timestamp]\n$text\n\n',
-        mode: FileMode.append,
-      );
-
-      noteController.clear();
-
-      // FIX: mounted check before using context after async gap
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Note Saved Successfully ✅'),
-            backgroundColor: Colors.green,
-            behavior: SnackBarBehavior.floating,
-          ),
-        );
-      }
-    } catch (e) {
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('Error saving note: $e'),
-            backgroundColor: Colors.red,
-            behavior: SnackBarBehavior.floating,
-          ),
-        );
-      }
-    }
-  }
-
-  Future<void> readNote() async {
-    try {
-      final path = await getFilePath();
-      final file = File(path);
-
-      if (!await file.exists()) {
-        // FIX: Better message when file doesn't exist yet
-        if (mounted) {
-          setState(() => savedNote = 'No saved notes yet. Write one above!');
-        }
-        return;
-      }
-
-      final content = await file.readAsString();
-      if (mounted) {
-        setState(() {
-          savedNote = content.isEmpty ? 'Note file is empty.' : content;
-        });
-      }
-    } catch (e) {
-      if (mounted) {
-        setState(() => savedNote = 'Error reading note: $e');
-      }
-    }
-  }
-
-  Future<void> clearNote() async {
-    try {
-      final path = await getFilePath();
-      final file = File(path);
-      if (await file.exists()) await file.delete();
-      if (mounted) {
-        setState(() => savedNote = '');
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('All notes cleared'),
-            behavior: SnackBarBehavior.floating,
-          ),
-        );
-      }
-    } catch (_) {}
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Notes App'),
-        backgroundColor: Colors.blueGrey,
-        foregroundColor: Colors.white,
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.delete_forever),
-            tooltip: 'Clear all notes',
-            onPressed: clearNote,
-          ),
-        ],
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          children: [
-            TextField(
-              controller: noteController,
-              maxLines: 4,
-              decoration: const InputDecoration(
-                labelText: 'Enter your note',
-                border: OutlineInputBorder(),
-                alignLabelWithHint: true,
-              ),
-            ),
-            const SizedBox(height: 16),
-            Row(
-              children: [
-                Expanded(
-                  child: ElevatedButton.icon(
-                    onPressed: saveNote,
-                    icon: const Icon(Icons.save),
-                    label: const Text('Save Note'),
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.blueGrey,
-                      foregroundColor: Colors.white,
-                    ),
-                  ),
-                ),
-                const SizedBox(width: 12),
-                Expanded(
-                  child: ElevatedButton.icon(
-                    onPressed: readNote,
-                    icon: const Icon(Icons.book),
-                    label: const Text('Read Notes'),
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.teal,
-                      foregroundColor: Colors.white,
-                    ),
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 20),
-            const Align(
-              alignment: Alignment.centerLeft,
-              child: Text(
-                'Saved Notes:',
-                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
-              ),
-            ),
-            const SizedBox(height: 8),
-            Expanded(
-              child: Container(
-                width: double.infinity,
-                padding: const EdgeInsets.all(12),
-                decoration: BoxDecoration(
-                  color: Colors.grey.shade100,
-                  border: Border.all(color: Colors.grey.shade300),
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                child: SingleChildScrollView(
-                  child: Text(
-                    savedNote.isEmpty ? 'Tap "Read Notes" to load.' : savedNote,
-                    style: const TextStyle(fontSize: 14),
-                  ),
-                ),
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-
------------------------------------------------------------------
-
-▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
-  Practical 14 - Dark Mode Toggle (Shared Preferences)
-  File: lib/main.dart
-▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
-
-// Practical 14 - Dark Mode Toggle (Shared Preferences)
-// DEPENDENCY: shared_preferences: ^2.2.2
-//
-// FIX: loadTheme() uses setState before build — needs async-safe pattern
-// FIX: HomeScreen received isDarkMode but couldn't update it live without
-//      a callback — pattern was correct but lacked a visual confirmation
-// FIX: Added current mode label text so user clearly sees which mode is active
-// FIX: ThemeData.dark() / .light() deprecated in newer Flutter; use ThemeData(brightness:)
-
-import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-
-void main() {
-  runApp(const MyApp());
-}
-
-class MyApp extends StatefulWidget {
-  const MyApp({super.key});
-
-  @override
-  State<MyApp> createState() => _MyAppState();
-}
-
-class _MyAppState extends State<MyApp> {
-  bool isDarkMode = false;
-  // FIX: Track if prefs loaded so we don't flicker with wrong theme
-  bool _loaded = false;
-
-  @override
-  void initState() {
-    super.initState();
-    loadTheme();
-  }
-
-  Future<void> loadTheme() async {
-    final prefs = await SharedPreferences.getInstance();
-    if (mounted) {
-      setState(() {
-        isDarkMode = prefs.getBool('darkMode') ?? false;
-        _loaded = true;
-      });
-    }
-  }
-
-  Future<void> saveTheme(bool value) async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setBool('darkMode', value);
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    // FIX: Show blank screen until prefs loaded to avoid theme flicker
-    if (!_loaded) {
-      return const MaterialApp(
-        home: Scaffold(body: Center(child: CircularProgressIndicator())),
-      );
-    }
-
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      // FIX: Use brightness-based theme (ThemeData.dark() is deprecated)
-      theme: ThemeData(
-        brightness: Brightness.light,
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.indigo),
-        useMaterial3: true,
-      ),
-      darkTheme: ThemeData(
-        brightness: Brightness.dark,
-        colorScheme: ColorScheme.fromSeed(
-          seedColor: Colors.indigo,
-          brightness: Brightness.dark,
-        ),
-        useMaterial3: true,
-      ),
-      themeMode: isDarkMode ? ThemeMode.dark : ThemeMode.light,
-      home: HomeScreen(
-        isDarkMode: isDarkMode,
-        onThemeChanged: (value) {
-          setState(() {
-            isDarkMode = value;
-          });
-          saveTheme(value);
-        },
-      ),
-    );
-  }
-}
-
-class HomeScreen extends StatelessWidget {
-  final bool isDarkMode;
-  final Function(bool) onThemeChanged;
-
-  const HomeScreen({
-    super.key,
-    required this.isDarkMode,
-    required this.onThemeChanged,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Dark Mode Toggle'),
-        centerTitle: true,
-      ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            // FIX: Mode icon
-            Icon(
-              isDarkMode ? Icons.dark_mode : Icons.light_mode,
-              size: 80,
-              color: isDarkMode ? Colors.indigo : Colors.orange,
-            ),
-            const SizedBox(height: 16),
-            // FIX: Current mode label
-            Text(
-              isDarkMode ? 'Dark Mode' : 'Light Mode',
-              style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(height: 24),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                const Text('Light', style: TextStyle(fontSize: 16)),
-                Switch(
-                  value: isDarkMode,
-                  onChanged: onThemeChanged,
-                ),
-                const Text('Dark', style: TextStyle(fontSize: 16)),
-              ],
-            ),
-            const SizedBox(height: 12),
-            Text(
-              'Preference is saved — reopening the app\nwill remember your choice.',
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                color: Theme.of(context).colorScheme.onSurface.withOpacity(0.6),
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-
------------------------------------------------------------------
-
-▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
-  Practical 15 - Mini Student Records (SQLite)
-  File: lib/main.dart
-▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
-
-// Practical 15 - Mini Student Records (SQLite)
-// DEPENDENCIES: sqflite: ^2.3.0 | path: ^1.9.0
-//
-// FIX 1: import 'package:path/path.dart' conflicts with Flutter internals — alias as 'p'
-// FIX 2: const MaterialApp(home: StudentScreen()) — StudentScreen is StatefulWidget, not const
-// FIX 3: No dispose() for TextEditingControllers — memory leak
-// FIX 4: No input validation — int.parse() crashes on empty/non-numeric ID
-// FIX 5: Duplicate ID causes unhandled exception — wrapped in try/catch
-// FIX 6: updateStudent() gives no feedback when ID not found
-// FIX 7: deleteStudent() deletes instantly with no confirmation
-// FIX 8: No way to select a record to edit — tap card fills form
-// FIX 9: No Clear button
-// FIX 10: Generic Icons.school avatar — replaced with initial CircleAvatar
-
-import 'package:flutter/material.dart';
-import 'package:sqflite/sqflite.dart';
-import 'package:path/path.dart' as p; // FIX 1: alias to avoid name conflict
-
-void main() {
-  runApp(const StudentApp());
-}
-
-class StudentApp extends StatelessWidget {
-  const StudentApp({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp( // FIX 2: removed 'const' — StudentScreen() is not const
-      debugShowCheckedModeBanner: false,
-      title: 'Student Records',
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.indigo),
-        useMaterial3: true,
-      ),
-      home: const StudentScreen(),
-    );
-  }
-}
-
-class StudentScreen extends StatefulWidget {
-  const StudentScreen({super.key});
-
-  @override
-  State<StudentScreen> createState() => _StudentScreenState();
-}
-
-class _StudentScreenState extends State<StudentScreen> {
-  Database? database;
-  List<Map<String, dynamic>> students = [];
-
-  final idController      = TextEditingController();
-  final nameController    = TextEditingController();
-  final addressController = TextEditingController();
-  final contactController = TextEditingController();
-
-  // FIX 3: dispose controllers to free memory
-  @override
-  void dispose() {
-    idController.dispose();
-    nameController.dispose();
-    addressController.dispose();
-    contactController.dispose();
-    super.dispose();
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    initDB();
-  }
-
-  Future<void> initDB() async {
-    database = await openDatabase(
-      p.join(await getDatabasesPath(), 'students.db'), // FIX 1 applied
-      version: 1,
-      onCreate: (db, version) async {
-        await db.execute('''
-          CREATE TABLE students (
-            id      INTEGER PRIMARY KEY,
-            name    TEXT NOT NULL,
-            address TEXT,
-            contact TEXT
-          )
-        ''');
-      },
-    );
-    fetchStudents();
-  }
-
-  Future<void> fetchStudents() async {
-    final data = await database!.query('students', orderBy: 'id ASC');
-    setState(() => students = data);
-  }
-
-  Future<void> addStudent() async {
-    if (!_validateFields()) return;
-
-    // FIX 5: handle duplicate ID gracefully
-    try {
-      await database!.insert('students', {
-        'id':      int.parse(idController.text.trim()),
-        'name':    nameController.text.trim(),
-        'address': addressController.text.trim(),
-        'contact': contactController.text.trim(),
-      });
-      clearFields();
-      fetchStudents();
-      _showSnack('Student added successfully', Colors.green);
-    } catch (e) {
-      _showSnack('ID already exists. Use a different ID.', Colors.red);
-    }
-  }
-
-  Future<void> updateStudent() async {
-    if (!_validateFields()) return;
-
-    final count = await database!.update(
-      'students',
-      {
-        'name':    nameController.text.trim(),
-        'address': addressController.text.trim(),
-        'contact': contactController.text.trim(),
-      },
-      where: 'id = ?',
-      whereArgs: [int.parse(idController.text.trim())],
-    );
-
-    // FIX 6: inform user if no row matched
-    if (count == 0) {
-      _showSnack('No student found with that ID.', Colors.orange);
-    } else {
-      clearFields();
-      fetchStudents();
-      _showSnack('Student updated successfully', Colors.blue);
-    }
-  }
-
-  Future<void> deleteStudent(int id) async {
-    // FIX 7: confirmation before delete
-    final confirm = await showDialog<bool>(
-      context: context,
-      builder: (_) => AlertDialog(
-        title: const Text('Delete Student'),
-        content: Text('Delete student with ID $id?'),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context, false),
-            child: const Text('Cancel'),
-          ),
-          TextButton(
-            onPressed: () => Navigator.pop(context, true),
-            child: const Text('Delete', style: TextStyle(color: Colors.red)),
-          ),
-        ],
-      ),
-    );
-
-    if (confirm == true) {
-      await database!.delete('students', where: 'id = ?', whereArgs: [id]);
-      fetchStudents();
-      _showSnack('Student deleted', Colors.red);
-    }
-  }
-
-  void clearFields() {
-    idController.clear();
-    nameController.clear();
-    addressController.clear();
-    contactController.clear();
-  }
-
-  // FIX 4: validation helper
-  bool _validateFields() {
-    if (idController.text.trim().isEmpty ||
-        nameController.text.trim().isEmpty ||
-        contactController.text.trim().isEmpty) {
-      _showSnack('ID, Name, and Contact are required.', Colors.orange);
-      return false;
-    }
-    if (int.tryParse(idController.text.trim()) == null) {
-      _showSnack('ID must be a valid number.', Colors.orange);
-      return false;
-    }
-    return true;
-  }
-
-  void _showSnack(String msg, Color color) {
-    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-      content: Text(msg),
-      backgroundColor: color,
-      behavior: SnackBarBehavior.floating,
-      duration: const Duration(seconds: 2),
-    ));
-  }
-
-  // FIX 8: tap card to fill form for editing
-  void _fillFields(Map<String, dynamic> student) {
-    idController.text      = student['id'].toString();
-    nameController.text    = student['name'];
-    addressController.text = student['address'] ?? '';
-    contactController.text = student['contact'] ?? '';
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text(
-          'Student Records (SQLite)',
-          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
-        ),
-        backgroundColor: Colors.indigo,
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(12),
-        child: Column(
-          children: [
-            // Input card
-            Card(
-              elevation: 3,
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12)),
-              child: Padding(
-                padding: const EdgeInsets.all(12),
-                child: Column(
-                  children: [
-                    TextField(
-                      controller: idController,
-                      keyboardType: TextInputType.number,
-                      decoration: _inputDecor('Student ID', Icons.tag),
-                    ),
-                    const SizedBox(height: 8),
-                    TextField(
-                      controller: nameController,
-                      decoration: _inputDecor('Name', Icons.person),
-                    ),
-                    const SizedBox(height: 8),
-                    TextField(
-                      controller: addressController,
-                      decoration: _inputDecor('Address', Icons.location_on),
-                    ),
-                    const SizedBox(height: 8),
-                    TextField(
-                      controller: contactController,
-                      keyboardType: TextInputType.phone,
-                      decoration: _inputDecor('Contact', Icons.phone),
-                    ),
-                    const SizedBox(height: 12),
-                    Row(
-                      children: [
-                        Expanded(
-                          child: ElevatedButton.icon(
-                            onPressed: addStudent,
-                            icon: const Icon(Icons.add),
-                            label: const Text('Add'),
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: Colors.indigo,
-                              foregroundColor: Colors.white,
-                            ),
-                          ),
-                        ),
-                        const SizedBox(width: 8),
-                        Expanded(
-                          child: ElevatedButton.icon(
-                            onPressed: updateStudent,
-                            icon: const Icon(Icons.edit),
-                            label: const Text('Update'),
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: Colors.orange,
-                              foregroundColor: Colors.white,
-                            ),
-                          ),
-                        ),
-                        const SizedBox(width: 8),
-                        // FIX 9: Clear button
-                        Expanded(
-                          child: ElevatedButton.icon(
-                            onPressed: clearFields,
-                            icon: const Icon(Icons.clear),
-                            label: const Text('Clear'),
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: Colors.grey,
-                              foregroundColor: Colors.white,
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-              ),
-            ),
-
-            const SizedBox(height: 8),
-            Align(
-              alignment: Alignment.centerLeft,
-              child: Text(
-                'Total Students: ${students.length}',
-                style: const TextStyle(
-                    fontWeight: FontWeight.w600, color: Colors.indigo),
-              ),
-            ),
-            const SizedBox(height: 6),
-
-            // Student list
-            Expanded(
-              child: students.isEmpty
-                  ? const Center(
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Icon(Icons.school_outlined,
-                              size: 64, color: Colors.grey),
-                          SizedBox(height: 8),
-                          Text('No students yet. Add one above.',
-                              style: TextStyle(color: Colors.grey)),
-                        ],
-                      ),
-                    )
-                  : ListView.builder(
-                      itemCount: students.length,
-                      itemBuilder: (context, index) {
-                        final s = students[index];
-                        return Card(
-                          elevation: 3,
-                          margin: const EdgeInsets.symmetric(
-                              vertical: 5, horizontal: 2),
-                          shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(10)),
-                          child: ListTile(
-                            onTap: () => _fillFields(s), // FIX 8
-                            leading: CircleAvatar(
-                              backgroundColor: Colors.indigo,
-                              // FIX 10: Initial avatar instead of generic icon
-                              child: Text(
-                                s['name'][0].toUpperCase(),
-                                style: const TextStyle(color: Colors.white),
-                              ),
-                            ),
-                            title: Text(
-                              s['name'],
-                              style:
-                                  const TextStyle(fontWeight: FontWeight.bold),
-                            ),
-                            subtitle: Text(
-                              'ID: ${s['id']}  •  ${s['address'] ?? 'No address'}\n📞 ${s['contact']}',
-                            ),
-                            isThreeLine: true,
-                            trailing: IconButton(
-                              icon:
-                                  const Icon(Icons.delete, color: Colors.red),
-                              tooltip: 'Delete',
-                              onPressed: () => deleteStudent(s['id']),
-                            ),
-                          ),
-                        );
-                      },
-                    ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  InputDecoration _inputDecor(String label, IconData icon) => InputDecoration(
-        labelText: label,
-        prefixIcon: Icon(icon, color: Colors.indigo),
-        border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
-        contentPadding:
-            const EdgeInsets.symmetric(vertical: 10, horizontal: 12),
-      );
-}
-
-
------------------------------------------------------------------
-
-=================================================================
-  END OF ALL PRACTICALS
-=================================================================
+import numpy as np
+
+def fuzzy_union_or(A, B):
+    if len(A) != len(B):
+        raise ValueError("Fuzzy sets must have the same length.")
+    return np.maximum(A, B)
+
+def fuzzy_intersection_and(A, B):
+    if len(A) != len(B):
+        raise ValueError("Fuzzy sets must have the same length.")
+    return np.minimum(A, B)
+
+def fuzzy_complement_not(A):
+    return 1 - A
+
+# Universe of Discourse
+U = np.array([1, 2, 3, 4, 5])
+print(f"Universe of Discourse (U): {U}\n")
+
+# Define two fuzzy sets
+A = np.array([1.0, 0.8, 0.4, 0.1, 0.0])
+B = np.array([0.0, 0.1, 0.3, 0.7, 1.0])
+
+print("--- Original Sets ---")
+print(f"Fuzzy Set A: {A}")
+print(f"Fuzzy Set B: {B}\n")
+
+# a. Fuzzy UNION (OR)
+A_OR_B = fuzzy_union_or(A, B)
+print("--- Fuzzy UNION (A OR B) ---")
+print(f"Operation: max(mu_A(x), mu_B(x))")
+print(f"Result: {A_OR_B}\n")
+
+# b. Fuzzy INTERSECTION (AND)
+A_AND_B = fuzzy_intersection_and(A, B)
+print("--- Fuzzy INTERSECTION (A AND B) ---")
+print(f"Operation: min(mu_A(x), mu_B(x))")
+print(f"Result: {A_AND_B}\n")
+
+# c. Fuzzy COMPLEMENT (NOT A)
+NOT_A = fuzzy_complement_not(A)
+print("--- Fuzzy COMPLEMENT (NOT A) ---")
+print(f"Operation: 1 - mu_A(x)")
+print(f"Result: {NOT_A}\n")
+
+NOT_B = fuzzy_complement_not(B)
+print("--- Fuzzy COMPLEMENT (NOT B) ---")
+print(f"Operation: 1 - mu_B(x)")
+print(f"Result: {NOT_B}")
+
+
+2.
+
+import numpy as np
+import skfuzzy as fuzz
+from skfuzzy import control as ctrl
+import matplotlib.pyplot as plt
+
+# --- Step 1: Define Input/Output Variables ---
+service = ctrl.Antecedent(np.arange(0, 11, 1), 'service')  # 0 to 10
+food    = ctrl.Antecedent(np.arange(0, 11, 1), 'food')     # 0 to 10
+tip     = ctrl.Consequent(np.arange(0, 26, 1), 'tip')      # 0 to 25%
+
+# --- Step 2: Define Membership Functions ---
+service['poor']       = fuzz.trimf(service.universe, [0, 0, 5])
+service['acceptable'] = fuzz.trimf(service.universe, [0, 5, 10])
+service['excellent']  = fuzz.trimf(service.universe, [5, 10, 10])
+
+food['bad']    = fuzz.trapmf(food.universe, [0, 0, 1, 3])
+food['decent'] = fuzz.trimf(food.universe,  [1, 5, 9])
+food['great']  = fuzz.trapmf(food.universe, [7, 9, 10, 10])
+
+tip['low']    = fuzz.trimf(tip.universe, [0, 0, 13])
+tip['medium'] = fuzz.trimf(tip.universe, [0, 13, 25])
+tip['high']   = fuzz.trimf(tip.universe, [13, 25, 25])
+
+# --- Step 3: Define Fuzzy Rules ---
+rule1 = ctrl.Rule(service['poor']      | food['bad'],               tip['low'])
+rule2 = ctrl.Rule(service['acceptable'],                             tip['medium'])
+rule3 = ctrl.Rule(service['excellent'] & food['great'],              tip['high'])
+rule4 = ctrl.Rule(food['decent']       & service['poor'],            tip['medium'])
+
+# --- Step 4: Create Control System ---
+tip_ctrl   = ctrl.ControlSystem([rule1, rule2, rule3, rule4])
+tip_sim    = ctrl.ControlSystemSimulation(tip_ctrl)
+
+# --- Step 5: Test Example 1 (Good service, Great food) ---
+tip_sim.input['service'] = 6.5
+tip_sim.input['food']    = 9.8
+tip_sim.compute()
+print(f"Service: 6.5/10 | Food: 9.8/10")
+print(f">>> Recommended Tip: {tip_sim.output['tip']:.2f}%\n")
+
+# --- Test Example 2 (Poor service, Bad food) ---
+tip_sim.input['service'] = 2
+tip_sim.input['food']    = 3
+tip_sim.compute()
+print(f"Service: 2/10 | Food: 3/10")
+print(f">>> Recommended Tip: {tip_sim.output['tip']:.2f}%")
+
+# --- Visualize membership functions ---
+service.view()
+food.view()
+tip.view(sim=tip_sim)
+plt.show()
+
+
+3.//defuzzification
+
+import numpy as np
+import skfuzzy as fuzz
+import matplotlib.pyplot as plt
+
+def demonstrate_defuzzification(universe, aggregated_mf):
+
+    # Apply all 5 defuzzification methods
+    cog = fuzz.defuzz(universe, aggregated_mf, 'centroid')   # Center of Gravity
+    boa = fuzz.defuzz(universe, aggregated_mf, 'bisector')   # Bisector of Area
+    mom = fuzz.defuzz(universe, aggregated_mf, 'mom')        # Mean of Maximum
+    som = fuzz.defuzz(universe, aggregated_mf, 'som')        # Smallest of Maximum
+    lom = fuzz.defuzz(universe, aggregated_mf, 'lom')        # Largest of Maximum
+
+    # Print Results
+    print("--- Defuzzification Results ---")
+    print(f"Centroid (CoG):        {cog:.4f}")
+    print(f"Bisector (BoA):        {boa:.4f}")
+    print(f"Mean of Maximum (MoM): {mom:.4f}")
+    print(f"Smallest of Max (SoM): {som:.4f}")
+    print(f"Largest of Max (LoM):  {lom:.4f}")
+
+    # Plot all methods on the fuzzy set
+    plt.figure(figsize=(10, 6))
+    plt.plot(universe, aggregated_mf, 'b', linewidth=2.5, label='Aggregated Fuzzy Set')
+
+    plt.axvline(cog, color='r',  linestyle='--', label=f'Centroid CoG ({cog:.2f})')
+    plt.axvline(boa, color='g',  linestyle='-.', label=f'Bisector BoA ({boa:.2f})')
+    plt.axvline(mom, color='k',  linestyle=':',  label=f'Mean of Max MoM ({mom:.2f})')
+    plt.axvline(som, color='c',  linestyle=':',  label=f'Smallest of Max SoM ({som:.2f})')
+    plt.axvline(lom, color='m',  linestyle=':',  label=f'Largest of Max LoM ({lom:.2f})')
+
+    plt.title('Comparison of Defuzzification Techniques')
+    plt.xlabel('Output Universe (Tip %)')
+    plt.ylabel('Membership Degree')
+    plt.ylim(0, 1.1)
+    plt.legend()
+    plt.grid(True)
+    plt.show()
+
+# --- Define Universe and Fuzzy Set ---
+X = np.arange(0, 26, 0.1)   # Universe: 0 to 25 (tip percentage)
+
+# Two fuzzy shapes combined (simulating aggregated FIS output)
+mf_1 = fuzz.trapmf(X, [0, 5, 8, 11])     # Trapezoidal shape (left side)
+mf_2 = fuzz.trimf(X, [9, 15, 25])         # Triangular shape (right side)
+
+# Aggregate: mf_1 scaled by rule strength 0.7, mf_2 at full strength
+aggregated_mf = np.fmax(mf_1 * 0.7, mf_2 * 1.0)
+
+# Run
+demonstrate_defuzzification(X, aggregated_mf)
+
+
+4. //single perceptorn
+import numpy as np
+import matplotlib.pyplot as plt
+
+# --- Step Function (Activation) ---
+def step_function(weighted_sum):
+    return 1 if weighted_sum >= 0 else 0
+
+# --- Perceptron Class ---
+class Perceptron:
+    def __init__(self, num_inputs, learning_rate=0.1, max_epochs=50):
+        self.weights       = np.random.uniform(-0.5, 0.5, num_inputs)
+        self.bias          = np.random.uniform(-0.5, 0.5)
+        self.learning_rate = learning_rate
+        self.max_epochs    = max_epochs
+        self.errors        = []
+
+    def predict(self, inputs):
+        weighted_sum = np.dot(inputs, self.weights) + self.bias
+        return step_function(weighted_sum)
+
+    def train(self, X_train, y_train):
+        print(f"--- Training Perceptron (LR={self.learning_rate}, Epochs={self.max_epochs}) ---\n")
+
+        for epoch in range(self.max_epochs):
+            total_error = 0
+
+            for inputs, label in zip(X_train, y_train):
+                prediction  = self.predict(inputs)
+                error       = label - prediction
+                total_error += abs(error)
+
+                if error != 0:
+                    # Update weights and bias
+                    self.weights += self.learning_rate * error * inputs
+                    self.bias    += self.learning_rate * error
+
+            self.errors.append(total_error)
+
+            # Stop early if fully converged
+            if total_error == 0:
+                print(f"✅ Converged at Epoch {epoch + 1}!")
+                break
+
+            if (epoch + 1) % 10 == 0:
+                print(f"Epoch {epoch+1} | Total Errors: {total_error}")
+
+        print(f"\nFinal Weights : {self.weights}")
+        print(f"Final Bias    : {self.bias:.4f}")
+
+# --- AND Gate Data ---
+X_train = np.array([[0,0], [0,1], [1,0], [1,1]])
+y_train = np.array([0, 0, 0, 1])
+
+# --- Train ---
+p = Perceptron(num_inputs=2, learning_rate=0.1, max_epochs=50)
+p.train(X_train, y_train)
+
+# --- Test ---
+print("\n--- Testing Model ---")
+for inputs, expected in zip(X_train, y_train):
+    predicted = p.predict(inputs)
+    status    = "✅ Correct" if predicted == expected else "❌ Wrong"
+    print(f"Input: {inputs} | Predicted: {predicted} | Expected: {expected} | {status}")
+
+# --- Plot Error History ---
+plt.figure(figsize=(8, 4))
+plt.plot(p.errors, marker='o', color='blue')
+plt.title('Perceptron Training Error Over Epochs')
+plt.xlabel('Epoch')
+plt.ylabel('Total Misclassifications')
+plt.grid(True)
+plt.show()
+
+
+5.//MLP
+
+import numpy as np
+import matplotlib.pyplot as plt
+
+# --- Activation Function ---
+def sigmoid(x):
+    x = np.clip(x, -500, 500)       # Prevent overflow
+    return 1 / (1 + np.exp(-x))
+
+def sigmoid_derivative(output):
+    return output * (1 - output)    # Derivative using output value
+
+# --- MLP Class ---
+class MLP:
+    def __init__(self, input_size, hidden_size, output_size, lr=0.2, epochs=10000):
+        self.lr      = lr
+        self.epochs  = epochs
+        self.errors  = []
+
+        # Random weight initialization
+        self.W_ih = np.random.uniform(-0.5, 0.5, (input_size, hidden_size))  # Input→Hidden
+        self.b_h  = np.zeros((1, hidden_size))                                # Hidden bias
+
+        self.W_ho = np.random.uniform(-0.5, 0.5, (hidden_size, output_size)) # Hidden→Output
+        self.b_o  = np.zeros((1, output_size))                                # Output bias
+
+    def forward(self, X):
+        # Hidden layer
+        self.net_h = np.dot(X, self.W_ih) + self.b_h
+        self.out_h = sigmoid(self.net_h)
+
+        # Output layer
+        self.net_o = np.dot(self.out_h, self.W_ho) + self.b_o
+        self.out_o = sigmoid(self.net_o)
+        return self.out_o
+
+    def backward(self, X, y):
+        # --- Output layer error ---
+        error_o = y - self.out_o
+        delta_o = error_o * sigmoid_derivative(self.out_o)
+
+        # --- Hidden layer error (backpropagate) ---
+        error_h = delta_o.dot(self.W_ho.T)
+        delta_h = error_h * sigmoid_derivative(self.out_h)
+
+        # --- Update weights ---
+        self.W_ho += self.out_h.T.dot(delta_o) * self.lr
+        self.b_o  += np.sum(delta_o, axis=0, keepdims=True) * self.lr
+
+        self.W_ih += X.T.dot(delta_h) * self.lr
+        self.b_h  += np.sum(delta_h, axis=0, keepdims=True) * self.lr
+
+        return np.mean(error_o ** 2)   # Return MSE
+
+    def train(self, X, y):
+        print(f"--- Training MLP (Hidden={self.W_ih.shape[1]}, LR={self.lr}) ---\n")
+        for epoch in range(self.epochs):
+            out = self.forward(X)
+            mse = self.backward(X, y)
+            self.errors.append(mse)
+
+            if (epoch + 1) % 1000 == 0:
+                print(f"Epoch {epoch+1}/{self.epochs} | MSE: {mse:.6f}")
+        print("\n--- Training Complete ---")
+
+# --- XOR Gate Data ---
+X_train = np.array([[0,0], [0,1], [1,0], [1,1]])
+y_train = np.array([[0],   [1],   [1],   [0]])
+
+# --- Train MLP ---
+mlp = MLP(input_size=2, hidden_size=4, output_size=1, lr=0.2, epochs=10000)
+mlp.train(X_train, y_train)
+
+# --- Test ---
+print("\n--- Testing Model ---")
+predictions = mlp.forward(X_train)
+for inputs, pred, expected in zip(X_train, predictions, y_train):
+    predicted_class = 1 if pred[0] >= 0.5 else 0
+    status = "✅ Correct" if predicted_class == expected[0] else "❌ Wrong"
+    print(f"Input: {inputs} | Raw: {pred[0]:.4f} | Predicted: {predicted_class} | Expected: {expected[0]} | {status}")
+
+# --- Plot MSE ---
+plt.figure(figsize=(10, 5))
+plt.plot(mlp.errors, color='red')
+plt.title('MLP Training Error (MSE) Over Epochs')
+plt.xlabel('Epoch')
+plt.ylabel('Mean Squared Error')
+plt.grid(True)
+plt.show()
+
+
+
+6.//MCP neuron
+
+import numpy as np
+
+# --- Threshold Activation Function ---
+def mcp_activation(net_input, threshold):
+    return 1 if net_input >= threshold else 0
+
+# --- MCP Neuron ---
+def mcp_neuron(inputs, weights, threshold):
+    inputs    = np.array(inputs)
+    weights   = np.array(weights)
+    net_input = np.dot(inputs, weights)   # Weighted sum
+    output    = mcp_activation(net_input, threshold)
+    return net_input, output
+
+# =============================================
+# --- OR Gate ---
+# Logic: Output = 1 if ANY input is 1
+# =============================================
+def implement_or_gate():
+    print("=" * 40)
+    print("   Logical OR Gate (MCP Neuron)")
+    print("=" * 40)
+
+    weights   = [1, 1]   # Both inputs equally important
+    threshold = 1        # Fire if at least one input is 1
+
+    test_cases = [([0,0], 0), ([0,1], 1), ([1,0], 1), ([1,1], 1)]
+
+    print(f"Weights: {weights} | Threshold: {threshold}\n")
+    print(f"{'Input (A,B)':<14} {'Net Input':<12} {'Output':<10} {'Expected':<10} {'Status'}")
+    print("-" * 55)
+
+    for inputs, expected in test_cases:
+        net_input, output = mcp_neuron(inputs, weights, threshold)
+        status = "✅" if output == expected else "❌"
+        print(f"  {inputs}         {net_input:<12}  {output:<10} {expected:<10} {status}")
+
+# =============================================
+# --- NOT Gate ---
+# Logic: Output = opposite of input
+# =============================================
+def implement_not_gate():
+    print("\n" + "=" * 40)
+    print("   Logical NOT Gate (MCP Neuron)")
+    print("=" * 40)
+
+    weights   = [-1]   # Negative weight inhibits firing
+    threshold = 0      # Fire only when input is 0
+
+    test_cases = [([0], 1), ([1], 0)]
+
+    print(f"Weights: {weights} | Threshold: {threshold}\n")
+    print(f"{'Input (A)':<12} {'Net Input':<12} {'Output':<10} {'Expected':<10} {'Status'}")
+    print("-" * 50)
+
+    for inputs, expected in test_cases:
+        net_input, output = mcp_neuron(inputs, weights, threshold)
+        status = "✅" if output == expected else "❌"
+        print(f"  {inputs}          {net_input:<12}  {output:<10} {expected:<10} {status}")
+
+# =============================================
+# --- AND Gate (Bonus) ---
+# Logic: Output = 1 only if ALL inputs are 1
+# =============================================
+def implement_and_gate():
+    print("\n" + "=" * 40)
+    print("   Logical AND Gate (MCP Neuron)")
+    print("=" * 40)
+
+    weights   = [1, 1]   # Both inputs needed
+    threshold = 2        # Fire only when BOTH inputs are 1
+
+    test_cases = [([0,0], 0), ([0,1], 0), ([1,0], 0), ([1,1], 1)]
+
+    print(f"Weights: {weights} | Threshold: {threshold}\n")
+    print(f"{'Input (A,B)':<14} {'Net Input':<12} {'Output':<10} {'Expected':<10} {'Status'}")
+    print("-" * 55)
+
+    for inputs, expected in test_cases:
+        net_input, output = mcp_neuron(inputs, weights, threshold)
+        status = "✅" if output == expected else "❌"
+        print(f"  {inputs}         {net_input:<12}  {output:<10} {expected:<10} {status}")
+
+# --- Run All Gates ---
+implement_or_gate()
+implement_not_gate()
+implement_and_gate()
+
+
+7a.
+# Practical 7A: Implementation of Genetic Algorithm (GA)
+# Topic: Evolutionary Computing
+# Goal: Find maximum of f(x) = x * sin(10*pi*x) + 1 in range [-1, 2]
+# Operations: Tournament Selection, Arithmetic Crossover, Gaussian Mutation
+# Library: numpy, matplotlib
+# How to run: python practical7a.py
+
+import numpy as np
+import matplotlib.pyplot as plt
+
+# Fitness function to maximize
+def fitness_function(x):
+    return x * np.sin(10 * np.pi * x) + 1
+
+# GA Parameters
+POP_SIZE       = 40
+GENERATIONS    = 100
+X_MIN, X_MAX   = -1.0, 2.0
+CROSSOVER_PROB = 0.9
+MUTATION_PROB  = 0.2
+MUTATION_STD   = 0.1
+
+np.random.seed(42)
+population = np.random.uniform(X_MIN, X_MAX, POP_SIZE)
+
+# Tournament Selection - pick best from random k candidates
+def tournament_selection(pop, fitness_vals, k=3):
+    selected = []
+    for _ in range(len(pop)):
+        idx = np.random.choice(len(pop), k, replace=False)
+        selected.append(pop[idx[np.argmax(fitness_vals[idx])]])
+    return np.array(selected)
+
+# Arithmetic Crossover - blend two parents
+def arithmetic_crossover(p1, p2):
+    alpha = np.random.rand()
+    return alpha * p1 + (1 - alpha) * p2, alpha * p2 + (1 - alpha) * p1
+
+# Gaussian Mutation - add small random noise
+def mutate(x):
+    if np.random.rand() < MUTATION_PROB:
+        x += np.random.normal(0, MUTATION_STD)
+    return np.clip(x, X_MIN, X_MAX)
+
+# GA Main Loop
+best_history = []
+mean_history = []
+
+for _ in range(GENERATIONS):
+    fitness_vals = fitness_function(population)
+    best_history.append(np.max(fitness_vals))
+    mean_history.append(np.mean(fitness_vals))
+
+    parents   = tournament_selection(population, fitness_vals)
+    offspring = []
+    np.random.shuffle(parents)
+
+    for i in range(0, POP_SIZE, 2):
+        if np.random.rand() < CROSSOVER_PROB:
+            c1, c2 = arithmetic_crossover(parents[i], parents[i+1])
+        else:
+            c1, c2 = parents[i], parents[i+1]
+        offspring.extend([mutate(c1), mutate(c2)])
+
+    population = np.array(offspring)
+
+# Results
+best_x   = population[np.argmax(fitness_function(population))]
+print(f"Best x found    : {best_x:.4f}")
+print(f"Best fitness    : {fitness_function(best_x):.4f}")
+
+# Plot 1: Convergence
+plt.figure(figsize=(10, 4))
+plt.plot(best_history, label='Best Fitness')
+plt.plot(mean_history, label='Mean Fitness')
+plt.title('GA Convergence Over Generations')
+plt.xlabel('Generation')
+plt.ylabel('Fitness')
+plt.legend()
+plt.grid(True)
+plt.show()
+
+# Plot 2: Final Population on Function
+x = np.linspace(X_MIN, X_MAX, 500)
+plt.figure(figsize=(10, 4))
+plt.plot(x, fitness_function(x), label='f(x)', color='blue')
+plt.scatter(population, fitness_function(population), color='red', label='Final Population')
+plt.title('Final Population on Fitness Function')
+plt.xlabel('x')
+plt.ylabel('f(x)')
+plt.legend()
+plt.grid(True)
+plt.show()
+
+
+7B.
+# Practical 7B: Genetic Algorithm - Minimize f(x) = x^2
+# Topic: Evolutionary Computing
+# Goal: Find x closest to 0 where f(x) = x^2 is minimum
+# Operations: Tournament Selection, Arithmetic Crossover, Random Mutation
+# Library: random only
+# How to run: python practical7b.py
+
+import random
+
+def fitness(x):
+    return x * x                          # Minimize x^2 (min at x=0)
+
+def initialize_population(size):
+    return [random.uniform(-10, 10) for _ in range(size)]
+
+def selection(population):
+    a, b = random.sample(population, 2)
+    return a if fitness(a) < fitness(b) else b   # Lower fitness = better
+
+def crossover(p1, p2):
+    alpha = random.random()
+    return alpha * p1 + (1 - alpha) * p2
+
+def mutation(child, rate=0.1):
+    if random.random() < rate:
+        child += random.uniform(-1, 1)
+    return child
+
+def genetic_algorithm():
+    pop_size    = 20
+    generations = 50
+    population  = initialize_population(pop_size)
+
+    for gen in range(generations):
+        new_population = []
+        for _ in range(pop_size):
+            p1    = selection(population)
+            p2    = selection(population)
+            child = crossover(p1, p2)
+            child = mutation(child)
+            new_population.append(child)
+        population = new_population
+
+    best = min(population, key=fitness)
+    print(f"Best solution (x) : {best:.6f}")
+    print(f"Minimum f(x) = x² : {fitness(best):.6f}")
+
+genetic_algorithm()
+
+
+8A.
+# Practical 8A: Solving Travelling Salesman Problem (TSP) using GA
+# Topic: Combinatorial Optimization with Genetic Algorithm
+# Goal: Find shortest route visiting all 4 cities exactly once
+# Operations: Tournament Selection, Order Crossover (OX), Swap Mutation
+# Library: numpy, random
+# How to run: python practical8a.py
+
+import random
+import numpy as np
+
+# Distance matrix between 4 cities
+distance = np.array([
+    [0, 10, 15, 20],
+    [10, 0, 35, 25],
+    [15, 35, 0, 30],
+    [20, 25, 30, 0]
+])
+
+NUM_CITIES    = 4
+POP_SIZE      = 10
+GENERATIONS   = 100
+MUTATION_RATE = 0.2
+
+def total_distance(tour):
+    return sum(distance[tour[i], tour[(i+1) % NUM_CITIES]]
+               for i in range(NUM_CITIES))
+
+def fitness(tour):
+    return 1 / total_distance(tour)      # Higher = shorter route
+
+def create_population():
+    return [random.sample(range(NUM_CITIES), NUM_CITIES)
+            for _ in range(POP_SIZE)]
+
+def selection(population):
+    a, b = random.sample(population, 2)
+    return a if fitness(a) > fitness(b) else b
+
+def crossover(p1, p2):
+    start, end = sorted(random.sample(range(NUM_CITIES), 2))
+    child      = [-1] * NUM_CITIES
+    child[start:end] = p1[start:end]
+    pointer = end
+    for city in p2:
+        if city not in child:
+            if pointer >= NUM_CITIES:
+                pointer = 0
+            child[pointer] = city
+            pointer += 1
+    return child
+
+def mutation(tour):
+    if random.random() < MUTATION_RATE:
+        i, j         = random.sample(range(NUM_CITIES), 2)
+        tour[i], tour[j] = tour[j], tour[i]
+    return tour
+
+# GA Main Loop
+population = create_population()
+for _ in range(GENERATIONS):
+    new_population = []
+    for _ in range(POP_SIZE):
+        p1    = selection(population)
+        p2    = selection(population)
+        child = crossover(p1, p2)
+        child = mutation(child)
+        new_population.append(child)
+    population = new_population
+
+best_tour = min(population, key=total_distance)
+print(f"Best Tour     : {best_tour}")
+print(f"Min Distance  : {total_distance(best_tour)}")
+
+
+8 B.
+# Practical 8B: TSP using GA - 5 Cities with Convergence Plot
+# Topic: Combinatorial Optimization
+# Goal: Find shortest route for 5 cities and plot convergence
+# Operations: Tournament Selection (k=3), Order Crossover, Swap Mutation
+# Library: numpy, random, matplotlib
+# How to run: python practical8b.py
+
+import numpy as np
+import random
+import matplotlib.pyplot as plt
+
+dist = np.array([
+    [0, 2, 9, 10, 7],
+    [2, 0, 6,  4, 3],
+    [9, 6, 0,  8, 5],
+    [10,4, 8,  0, 6],
+    [7, 3, 5,  6, 0]
+])
+
+NUM_CITIES    = len(dist)
+POP_SIZE      = 50
+GENERATIONS   = 200
+MUTATION_RATE = 0.2
+
+def total_distance(route):
+    return sum(dist[route[i], route[i+1]] for i in range(NUM_CITIES-1)) + dist[route[-1], route[0]]
+
+def fitness(route):
+    return 1 / total_distance(route)
+
+def init_population():
+    return [random.sample(range(NUM_CITIES), NUM_CITIES) for _ in range(POP_SIZE)]
+
+def selection(pop):
+    selected = random.sample(pop, 3)
+    return max(selected, key=fitness)
+
+def crossover(p1, p2):
+    a, b  = sorted(random.sample(range(NUM_CITIES), 2))
+    child = [-1] * NUM_CITIES
+    child[a:b] = p1[a:b]
+    ptr = b
+    for city in p2:
+        if city not in child:
+            if ptr == NUM_CITIES:
+                ptr = 0
+            child[ptr] = city
+            ptr += 1
+    return child
+
+def mutate(route):
+    if random.random() < MUTATION_RATE:
+        i, j = random.sample(range(NUM_CITIES), 2)
+        route[i], route[j] = route[j], route[i]
+    return route
+
+population = init_population()
+best_dist  = []
+
+for _ in range(GENERATIONS):
+    new_pop = []
+    for _ in range(POP_SIZE):
+        p1    = selection(population)
+        p2    = selection(population)
+        child = crossover(p1, p2)
+        child = mutate(child)
+        new_pop.append(child)
+    population   = new_pop
+    best_route   = min(population, key=total_distance)
+    best_dist.append(total_distance(best_route))
+
+print(f"Best Route       : {best_route}")
+print(f"Minimum Distance : {total_distance(best_route)}")
+
+plt.figure(figsize=(10, 5))
+plt.plot(best_dist, color='green')
+plt.title('GA for TSP - Convergence')
+plt.xlabel('Generation')
+plt.ylabel('Best Distance')
+plt.grid(True)
+plt.show()
+
+
+10.
+# Practical 10: Comparison of Hard and Soft Computing Techniques
+# Topic: Hard Computing vs Soft Computing
+# Hard Computing: Crisp, exact, binary decisions (deterministic)
+# Soft Computing: Approximate, gradual, fuzzy decisions
+# Library: None (pure Python)
+# How to run: python practical10.py
+
+# --- HARD COMPUTING: Exact Rule-Based ---
+def hard_temperature(temp):
+    if temp < 25:
+        return "Cold"
+    else:
+        return "Hot"
+
+# --- SOFT COMPUTING: Fuzzy-like Gradual Decision ---
+def soft_temperature(temp):
+    if temp <= 20:
+        return "Cold"
+    elif 20 < temp <= 30:
+        return "Warm"         # Transition zone (not in hard computing)
+    else:
+        return "Hot"
+
+temperatures = [18, 25, 28, 35]
+
+print(f"{'Temp':<10} {'Hard Computing':<20} {'Soft Computing'}")
+print("-" * 45)
+for t in temperatures:
+    print(f"{t}°C       {hard_temperature(t):<20} {soft_temperature(t)}")
+
+
+11.
+
+# Practical 11: Particle Swarm Optimization (PSO)
+# Topic: Swarm Intelligence
+# Goal: Find global minimum of Rastrigin function f(x) = 0 at x=[0,0]
+# Parameters: w=inertia, c1=cognitive, c2=social
+# Library: numpy
+# How to run: python practical11.py
+
+import numpy as np
+
+def rastrigin(X):
+    A = 10
+    return A * len(X) + np.sum(X**2 - A * np.cos(2 * np.pi * X))
+
+# PSO Parameters
+num_particles = 30
+dimensions    = 2
+iterations    = 100
+w, c1, c2     = 0.7, 1.5, 1.5
+
+# Initialize particles randomly
+X = np.random.uniform(-5.12, 5.12, (num_particles, dimensions))
+V = np.random.uniform(-1, 1,       (num_particles, dimensions))
+
+pbest     = X.copy()
+pbest_val = np.array([rastrigin(x) for x in X])
+gbest     = pbest[np.argmin(pbest_val)]
+gbest_val = min(pbest_val)
+
+# PSO Main Loop
+for _ in range(iterations):
+    for i in range(num_particles):
+        r1, r2 = np.random.rand(), np.random.rand()
+        V[i]   = w * V[i] + c1 * r1 * (pbest[i] - X[i]) + c2 * r2 * (gbest - X[i])
+        X[i]   = X[i] + V[i]
+
+        fit = rastrigin(X[i])
+        if fit < pbest_val[i]:
+            pbest[i]     = X[i].copy()
+            pbest_val[i] = fit
+
+    gbest     = pbest[np.argmin(pbest_val)]
+    gbest_val = min(pbest_val)
+
+print(f"Global Minimum Position : {gbest}")
+print(f"Minimum Value           : {gbest_val:.6f}")
+
+
+12.
+# Practical 12: PSO for Load Balancing (Makespan Minimization)
+# Topic: Swarm Intelligence applied to Scheduling
+# Goal: Assign 6 tasks to 3 machines to minimize total completion time
+# Library: numpy, random
+# How to run: python practical12.py
+
+import numpy as np
+import random
+
+N         = 6
+M         = 3
+task_time = np.array([2, 4, 6, 3, 5, 7])
+
+num_particles = 20
+iterations    = 50
+w, c1, c2     = 0.7, 1.5, 1.5
+
+def fitness(position):
+    loads = np.zeros(M)
+    for i in range(N):
+        machine = int(round(position[i])) % M
+        loads[machine] += task_time[i]
+    return max(loads)                        # Minimize the max load (makespan)
+
+particles  = np.random.randint(0, M, (num_particles, N)).astype(float)
+velocities = np.zeros((num_particles, N))
+
+pbest         = particles.copy()
+pbest_fitness = np.array([fitness(p) for p in particles])
+gbest         = pbest[np.argmin(pbest_fitness)].copy()
+gbest_fitness = min(pbest_fitness)
+
+for _ in range(iterations):
+    for i in range(num_particles):
+        r1, r2          = random.random(), random.random()
+        velocities[i]   = (w * velocities[i]
+                         + c1 * r1 * (pbest[i] - particles[i])
+                         + c2 * r2 * (gbest   - particles[i]))
+        particles[i]    = particles[i] + velocities[i]
+
+        fit = fitness(particles[i])
+        if fit < pbest_fitness[i]:
+            pbest[i]         = particles[i].copy()
+            pbest_fitness[i] = fit
+
+    gbest         = pbest[np.argmin(pbest_fitness)].copy()
+    gbest_fitness = min(pbest_fitness)
+
+allocation = np.round(gbest).astype(int) % M
+print(f"Task → Machine Allocation : {allocation}")
+print(f"Minimum Makespan          : {gbest_fitness}")
+
+
+
+13.
+# Practical 13: LSTM for Univariate Time Series Prediction
+# Topic: Deep Learning - Recurrent Neural Networks
+# Goal: Predict next value in a sine wave + noise series
+# Library: numpy only (no TensorFlow needed - concept demo version)
+# How to run: python practical13.py
+
+import numpy as np
+
+np.random.seed(1)
+t      = np.arange(0, 100, 0.1)
+data   = np.sin(t) + 0.1 * np.random.randn(len(t))
+
+# Prepare sequences of length 10
+step   = 10
+X, y   = [], []
+for i in range(len(data) - step):
+    X.append(data[i:i+step])
+    y.append(data[i+step])
+
+X = np.array(X)
+y = np.array(y)
+
+# Simple weight-based prediction (LSTM concept demo)
+W           = np.random.randn(step)
+predictions = X @ W / step
+
+print(f"Actual next value    : {y[-1]:.4f}")
+print(f"Predicted next value : {predictions[-1]:.4f}")
+print(f"\nSample predictions (last 5):")
+for i in range(-5, 0):
+    print(f"  Actual: {y[i]:.4f}  |  Predicted: {predictions[i]:.4f}")
+
+
+14.
+# Practical 14: LSTM Sentiment Classification
+# Topic: Deep Learning - NLP with LSTM
+# Goal: Classify sentences as Positive (1) or Negative (0)
+# Library: PyTorch (torch)
+# Install: pip install torch
+# How to run: python practical14.py
+
+import torch
+import torch.nn as nn
+import torch.optim as optim
+
+# Synthetic dataset
+sentences = [
+    "I love this movie",   "This film is great",  "Amazing experience",
+    "I hate this movie",   "This film is terrible","Worst experience"
+]
+labels = [1, 1, 1, 0, 0, 0]
+
+# Tokenization - assign number to each word
+vocab = {}
+for s in sentences:
+    for w in s.lower().split():
+        if w not in vocab:
+            vocab[w] = len(vocab) + 1
+
+def encode(sentence):
+    return [vocab.get(w, 0) for w in sentence.lower().split()]
+
+X       = [encode(s) for s in sentences]
+y       = torch.tensor(labels, dtype=torch.float)
+max_len = max(len(seq) for seq in X)
+
+# Padding to equal length
+X_pad    = [seq + [0] * (max_len - len(seq)) for seq in X]
+X_tensor = torch.tensor(X_pad)
+
+# LSTM Model
+class LSTMClassifier(nn.Module):
+    def __init__(self, vocab_size):
+        super().__init__()
+        self.embed   = nn.Embedding(vocab_size + 1, 8, padding_idx=0)
+        self.lstm    = nn.LSTM(8, 16, batch_first=True)
+        self.fc      = nn.Linear(16, 1)
+        self.sigmoid = nn.Sigmoid()
+
+    def forward(self, x):
+        x       = self.embed(x)
+        _, (h,_)= self.lstm(x)
+        return self.sigmoid(self.fc(h[-1]))
+
+model     = LSTMClassifier(len(vocab))
+criterion = nn.BCELoss()
+optimizer = optim.Adam(model.parameters(), lr=0.01)
+
+# Training
+for epoch in range(200):
+    optimizer.zero_grad()
+    output = model(X_tensor).squeeze()
+    loss   = criterion(output, y)
+    loss.backward()
+    optimizer.step()
+
+print("--- Training Complete ---\n")
+
+# Test on new sentence
+test_sentence  = "I love this film"
+test_encoded   = encode(test_sentence)
+test_encoded  += [0] * (max_len - len(test_encoded))
+test_tensor    = torch.tensor([test_encoded])
+prediction     = model(test_tensor).item()
+
+print(f"Test Sentence : '{test_sentence}'")
+print(f"Sentiment Score (0=negative, 1=positive) : {prediction:.4f}")
+print(f"Prediction    : {'Positive 😊' if prediction >= 0.5 else 'Negative 😞'}")
+
+
+15.
+# Practical 15: Self-Organizing Map (SOM) - Iris Dataset Clustering
+# Topic: Unsupervised Learning - Competitive Neural Networks
+# Goal: Cluster Iris dataset using SOM (manual numpy implementation)
+# Library: numpy, matplotlib, sklearn (for dataset only)
+# How to run: python practical15.py
+
+import numpy as np
+import matplotlib.pyplot as plt
+from sklearn.datasets import load_iris
+from sklearn.preprocessing import MinMaxScaler
+
+# Load and normalize data
+iris    = load_iris()
+X       = MinMaxScaler().fit_transform(iris.data)
+
+# SOM Parameters
+grid_size   = 5           # 5x5 grid of neurons
+input_size  = 4           # 4 features in Iris
+lr          = 0.5         # Initial learning rate
+epochs      = 100
+sigma       = 2.0         # Initial neighbourhood radius
+
+# Initialize SOM weights randomly
+weights = np.random.rand(grid_size, grid_size, input_size)
+
+def find_bmu(weights, x):
+    """Find Best Matching Unit (closest neuron to input x)"""
+    distances = np.linalg.norm(weights - x, axis=2)
+    return np.unravel_index(np.argmin(distances), distances.shape)
+
+def update_weights(weights, x, bmu, lr, sigma):
+    """Update all neurons based on distance from BMU"""
+    for i in range(grid_size):
+        for j in range(grid_size):
+            dist_to_bmu = np.sqrt((i - bmu[0])**2 + (j - bmu[1])**2)
+            influence   = np.exp(-dist_to_bmu**2 / (2 * sigma**2))
+            weights[i,j] += lr * influence * (x - weights[i,j])
+    return weights
+
+# Training
+for epoch in range(epochs):
+    current_lr    = lr    * np.exp(-epoch / epochs)
+    current_sigma = sigma * np.exp(-epoch / epochs)
+    np.random.shuffle(X)
+    for x in X:
+        bmu     = find_bmu(weights, x)
+        weights = update_weights(weights, x, bmu, current_lr, current_sigma)
+
+# Map each sample to its BMU
+bmu_map = np.zeros((len(X), 2), dtype=int)
+for idx, x in enumerate(iris.data):
+    x_norm      = MinMaxScaler().fit_transform(iris.data)[idx]
+    bmu         = find_bmu(weights, x_norm)
+    bmu_map[idx]= bmu
+
+# Plot
+plt.figure(figsize=(8, 8))
+colors = ['red', 'green', 'blue']
+labels = iris.target_names
+for i, (bmu, label) in enumerate(zip(bmu_map, iris.target)):
+    plt.scatter(bmu[0], bmu[1], color=colors[label], alpha=0.6)
+
+for i, color in enumerate(colors):
+    plt.scatter([], [], color=color, label=labels[i])
+
+plt.title('SOM Clustering of Iris Dataset')
+plt.xlabel('SOM Grid X')
+plt.ylabel('SOM Grid Y')
+plt.legend()
+plt.grid(True)
+plt.show()
+
+
+
+
